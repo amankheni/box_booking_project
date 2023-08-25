@@ -116,7 +116,121 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                   ),
                 ],
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 25),
+                child: Container(
+                  height: 10,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.black12,
+                    // gradient: LinearGradient(
+                    //   colors: [Colors.black26],
+                    // ),
+                  ),
+                ),
+              ),
+              const Row(
+                children: [
+                  Text(
+                    'Booking Summary',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(
+                height: 25,
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Sport',
+                  ),
+                  Text(
+                    'Box Criket',
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Slot Prize',
+                  ),
+                  Text(
+                    '1000/-',
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Convenience Fees',
+                  ),
+                  Text(
+                    '-',
+                  ),
+                ],
+              ),
+              const Divider(),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  ),
+                  Text(
+                    '1000/-',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  ),
+                ],
+              ),
             ],
+          ),
+        ),
+        bottomNavigationBar: Container(
+          height: 60,
+          width: double.infinity,
+          color: Colors.blue.shade50,
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Text(
+                  '₹ 1000/-',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.red,
+                  ),
+                ),
+                SizedBox(
+                  width: 160,
+                ),
+                Text(
+                  'Proceed To pay ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Icon(
+                  Icons.arrow_forward,
+                ),
+              ],
+            ),
           ),
         ),
       ),
