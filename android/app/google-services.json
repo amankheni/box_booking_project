@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "751811701912",
+    "project_id": "box-booking-project",
+    "storage_bucket": "box-booking-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751811701912:android:ddf88c1becf0b0a90734ed",
+        "android_client_info": {
+          "package_name": "com.example.box_booking_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751811701912-4r6begqtr2oub9gbjpa3j6ic3booii0h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.box_booking_project",
+            "certificate_hash": "044e22f31ba478f47c53ff64769da246c0fbc97a"
+          }
+        },
+        {
+          "client_id": "751811701912-eag6ijaenodphb33nsbdmhbmc53jvv0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAG1MO483uUJJ8jQotSThQO5JoKQwq5JQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751811701912-eag6ijaenodphb33nsbdmhbmc53jvv0r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
