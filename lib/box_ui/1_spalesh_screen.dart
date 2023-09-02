@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'package:box_booking_project/assets/spalesh_screen_controller.dart';
 import 'package:flutter/material.dart';
 
 class SpleshScreen extends StatefulWidget {
@@ -14,10 +15,10 @@ class _SpleshScreenState extends State<SpleshScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const Image(
+          Image(
             height: 852,
             fit: BoxFit.fill,
-            image: AssetImage("assets/image/splash screen.jpeg"),
+            image: AssetImage(SplashScreenController.bgImage),
           ),
           Center(
             child: Column(
@@ -26,8 +27,19 @@ class _SpleshScreenState extends State<SpleshScreen> {
                 Container(
                   height: 300,
                   width: 200,
-                  color: Colors.red,
-                )
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(SplashScreenController.logoImage),
+                    ),
+                  ),
+                ),
+                const Text(
+                  'Hello Criketers',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 144, 207, 221),
+                    fontSize: 30,
+                  ),
+                ),
               ],
             ),
           )

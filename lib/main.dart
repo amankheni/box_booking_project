@@ -1,4 +1,6 @@
-import 'package:box_booking_project/spalesh_screen.dart';
+import 'package:box_booking_project/box_ui/1_spalesh_screen.dart';
+import 'package:box_booking_project/box_ui/2_user_info.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const SpleshScreen(),
+      home: const UserInfo2(),
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
     );
