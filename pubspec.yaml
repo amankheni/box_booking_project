@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_fonts: ^5.1.0
   intl_phone_field: ^3.2.0
+  firebase_core: ^2.15.1
+  firebase_database: ^10.2.5
+  lottie: ^2.6.0
 
 dev_dependencies:
   flutter_test:

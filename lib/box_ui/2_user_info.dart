@@ -2,7 +2,9 @@
 // ignore: file_names
 // ignore_for_file: file_names
 
+import 'package:box_booking_project/network_and_database/firebase/2user_infoscreen_database.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class UserInfo2 extends StatefulWidget {
   const UserInfo2({super.key});
@@ -16,6 +18,7 @@ class _UserInfo2State extends State<UserInfo2> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  late Future<List<Map>> futureUserData;
 
   @override
   void dispose() {
@@ -30,67 +33,76 @@ class _UserInfo2State extends State<UserInfo2> {
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: key,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: nameController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your Name';
-                    }
-                    if (value.length >= 20) {
-                      return 'Please enter a maximum 20 charecter name';
-                    }
-                    // if (RegExp("[^p{L}ds_]").hasMatch(value)) {
-                    //   return "special charecter is not valid";
-                    // }
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Form(
+              key: key,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset('assets/image/criket ever.json'),
+                  TextFormField(
+                    controller: nameController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter your Name';
+                      }
+                      if (value.length >= 20) {
+                        return 'Please enter a maximum 20 charecter name';
+                      }
+                      // if (RegExp("[^p{L}ds_]").hasMatch(value)) {
+                      //   return "special charecter is not valid";
+                      // }
 
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Name',
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextFormField(
-                  controller: emailController,
-                  validator: (value) {
-                    if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value!)) {
-                      return "Please enter a valid email address";
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Email',
-                  ),
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-                MaterialButton(
-                  color: const Color.fromARGB(255, 45, 167, 162),
-                  onPressed: () {
-                    if (key.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Data Varified')));
-                    }
-                    setState(() {});
-                  },
-                  child: const Text(
-                    'Submit',
-                    style: TextStyle(
-                      fontSize: 17,
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Name',
                     ),
                   ),
-                )
-              ],
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    controller: emailController,
+                    validator: (value) {
+                      if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value!)) {
+                        return "Please enter a valid email address";
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  MaterialButton(
+                    color: const Color.fromARGB(255, 45, 167, 162),
+                    onPressed: () async {
+                      await UserInfoScreenFirebase.addUser(
+                          userName: nameController.text,
+                          email: emailController.text);
+
+                      if (key.currentState!.validate()) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Data Varified')));
+                      }
+                      setState(() {});
+                    },
+                    child: const Text(
+                      'Submit',
+                      style: TextStyle(
+                        fontSize: 17,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
