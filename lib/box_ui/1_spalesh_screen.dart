@@ -1,5 +1,8 @@
 // ignore_for_file: file_names
+import 'dart:async';
+
 import 'package:box_booking_project/assets/spalesh_screen_controller.dart';
+import 'package:box_booking_project/box_ui/2_user_info.dart';
 import 'package:flutter/material.dart';
 
 class SpleshScreen extends StatefulWidget {
@@ -10,6 +13,18 @@ class SpleshScreen extends StatefulWidget {
 }
 
 class _SpleshScreenState extends State<SpleshScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const UserInfo2(),
+          ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

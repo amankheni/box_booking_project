@@ -116,7 +116,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
             ),
             const SizedBox(
-              height: 60,
+              height: 35,
             ),
             const Divider(),
             const Row(
@@ -144,7 +144,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   Icons.arrow_drop_up,
                 ),
                 SizedBox(
-                  width: 60,
+                  width: 50,
                 ),
                 Text('Secured by'),
                 Image(
