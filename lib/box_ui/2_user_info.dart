@@ -5,7 +5,6 @@
 import 'package:box_booking_project/network_and_database/firebase/2user_infoscreen_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 
 class UserInfo2 extends StatefulWidget {
   const UserInfo2({super.key});
