@@ -1,13 +1,15 @@
 // ignore_for_file: file_names
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class OtpsendingScreen3 extends StatefulWidget {
-  const OtpsendingScreen3({super.key});
+  OtpsendingScreen3({super.key});
 
   @override
   State<OtpsendingScreen3> createState() => _OtpsendingScreen3State();
+  var phone = '';
 }
 
 class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
@@ -48,8 +50,9 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                         borderSide: BorderSide(),
                       ),
                     ),
+                    keyboardType: TextInputType.phone,
                     initialCountryCode: 'IN',
-                    onChanged: (phone) {},
+                    onChanged: (value) {},
                   ),
                 ),
                 const Text('By proceeding. you agree to the'),
@@ -71,7 +74,15 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                 ),
                 MaterialButton(
                   color: const Color.fromARGB(255, 45, 167, 162),
-                  onPressed: () {
+                  onPressed: () async {
+                    await FirebaseAuth.instance.verifyPhoneNumber(
+                      phoneNumber: '+44 7123 123 456',
+                      verificationCompleted:
+                          (PhoneAuthCredential credential) {},
+                      verificationFailed: (FirebaseAuthException e) {},
+                      codeSent: (String verificationId, int? resendToken) {},
+                      codeAutoRetrievalTimeout: (String verificationId) {},
+                    );
                     setState(() {});
                   },
                   child: const Padding(

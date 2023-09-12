@@ -1,5 +1,5 @@
 import 'package:box_booking_project/box_ui/3_otp_mobileno_screen.dart';
-import 'package:box_booking_project/box_ui/4_otp_verification_screen.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const OtpVerificationScreen4(),
+      home: OtpsendingScreen3(),
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
     );
