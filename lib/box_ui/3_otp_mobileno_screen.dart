@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'package:box_booking_project/box_ui/4_otp_verification_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -76,11 +77,14 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                   color: const Color.fromARGB(255, 45, 167, 162),
                   onPressed: () async {
                     await FirebaseAuth.instance.verifyPhoneNumber(
-                      phoneNumber: '+44 7123 123 456',
+                      phoneNumber: '+91 9913037095',
                       verificationCompleted:
                           (PhoneAuthCredential credential) {},
                       verificationFailed: (FirebaseAuthException e) {},
-                      codeSent: (String verificationId, int? resendToken) {},
+                      codeSent: (String verificationId, int? resendToken) {
+                        // Navigator.pushNamed(
+                        //     context, OtpVerificationScreen4 as String);
+                      },
                       codeAutoRetrievalTimeout: (String verificationId) {},
                     );
                     setState(() {});
@@ -92,7 +96,7 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
