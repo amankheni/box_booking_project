@@ -3,6 +3,7 @@
 // ignore_for_file: file_names
 
 import 'package:box_booking_project/box_ui/home_page.dart';
+import 'package:box_booking_project/box_ui/sign_up_screen.dart';
 import 'package:box_booking_project/network_and_database/firebase/2user_infoscreen_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -95,18 +96,24 @@ class _UserInfo2State extends State<UserInfo2> {
                 MaterialButton(
                   color: const Color.fromARGB(255, 45, 167, 162),
                   onPressed: () async {
-                    FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: emailController.text,
-                        password: passWordController.text);
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passWordController.text)
+                        .then((value) => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            )));
                     // await UserInfoScreenFirebase.addUser(
                     //     userName: passWordController.text,
                     //     email: passWordController.text);
 
-                    if (key.currentState!.validate()) {
-                      // ignore: use_build_context_synchronously
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Data Varified')));
-                    }
+                    // if (key.currentState!.validate()) {
+                    //   // ignore: use_build_context_synchronously
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //       const SnackBar(content: Text('Data Varified')));
+                    // }
                     setState(() {});
                   },
                   child: const Padding(
@@ -133,7 +140,14 @@ class _UserInfo2State extends State<UserInfo2> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignUpScreen2(),
+                          ),
+                        );
+                      },
                       child: const Text(
                         'Sing Up',
                         style: TextStyle(

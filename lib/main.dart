@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const SignUpScreen2(),
+      home: const SpleshScreen(),
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
     );
