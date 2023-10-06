@@ -6,11 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class OtpsendingScreen3 extends StatefulWidget {
-  OtpsendingScreen3({super.key});
+  const OtpsendingScreen3({super.key});
+  static String verify = '';
 
   @override
   State<OtpsendingScreen3> createState() => _OtpsendingScreen3State();
-  var phone = '';
 }
 
 class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
@@ -82,8 +82,13 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                           (PhoneAuthCredential credential) {},
                       verificationFailed: (FirebaseAuthException e) {},
                       codeSent: (String verificationId, int? resendToken) {
-                        // Navigator.pushNamed(
-                        //     context, OtpVerificationScreen4 as String);
+                        OtpVerificationScreen4.verify = verificationId;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const OtpVerificationScreen4(),
+                            ));
                       },
                       codeAutoRetrievalTimeout: (String verificationId) {},
                     );

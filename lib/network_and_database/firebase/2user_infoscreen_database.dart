@@ -6,12 +6,17 @@ class UserInfoScreenFirebase {
   static final DatabaseReference _db = FirebaseDatabase.instance.ref('user');
 
   static Future<void> addUser(
-      {required String userName, required String email}) async {
+      {required String firstName,
+      required String lastName,
+      required String email,
+      required String password}) async {
     String key = _db.push().key!;
     await _db.child(key).set({
       'key': key,
-      'userName': userName,
+      'firstName': firstName,
+      'lastName': lastName,
       'email': email,
+      'password': password,
     });
   }
 }

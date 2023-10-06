@@ -2,7 +2,10 @@
 // ignore: file_names
 // ignore_for_file: file_names
 
+import 'package:box_booking_project/box_ui/home_page.dart';
 import 'package:box_booking_project/network_and_database/firebase/2user_infoscreen_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,14 +19,14 @@ class UserInfo2 extends StatefulWidget {
 class _UserInfo2State extends State<UserInfo2> {
   final GlobalKey<FormState> key = GlobalKey<FormState>();
 
-  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController passWordController = TextEditingController();
   late Future<List<Map>> futureUserData;
 
   @override
   void dispose() {
-    nameController.dispose();
     emailController.dispose();
+    passWordController.dispose();
     super.dispose();
   }
 
@@ -49,29 +52,6 @@ class _UserInfo2State extends State<UserInfo2> {
                   height: 35,
                 ),
                 TextFormField(
-                  controller: nameController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your Name';
-                    }
-                    if (value.length >= 20) {
-                      return 'Please enter a maximum 20 charecter name';
-                    }
-                    // if (RegExp("[^p{L}ds_]").hasMatch(value)) {
-                    //   return "special charecter is not valid";
-                    // }
-
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Name',
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextFormField(
                   controller: emailController,
                   validator: (value) {
                     if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value!)) {
@@ -84,15 +64,43 @@ class _UserInfo2State extends State<UserInfo2> {
                     labelText: 'Email',
                   ),
                 ),
+
+                const SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  controller: passWordController,
+                  // validator: (value) {
+                  //   if (value!.isEmpty) {
+                  //     return 'Please enter your Name';
+                  //   }
+                  //   if (value.length >= 20) {
+                  //     return 'Please enter a maximum 20 charecter name';
+                  //   }
+                  //   // if (RegExp("[^p{L}ds_]").hasMatch(value)) {
+                  //   //   return "special charecter is not valid";
+                  //   // }
+
+                  //   return null;
+                  // },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                  ),
+                ),
+
                 const SizedBox(
                   height: 50,
                 ),
                 MaterialButton(
                   color: const Color.fromARGB(255, 45, 167, 162),
                   onPressed: () async {
-                    await UserInfoScreenFirebase.addUser(
-                        userName: nameController.text,
-                        email: emailController.text);
+                    FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: emailController.text,
+                        password: passWordController.text);
+                    // await UserInfoScreenFirebase.addUser(
+                    //     userName: passWordController.text,
+                    //     email: passWordController.text);
 
                     if (key.currentState!.validate()) {
                       // ignore: use_build_context_synchronously
@@ -111,6 +119,29 @@ class _UserInfo2State extends State<UserInfo2> {
                       ),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Don\'t have Account? ',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: const Text(
+                        'Sing Up',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 45, 167, 162),
+                        ),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),
