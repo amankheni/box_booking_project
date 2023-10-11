@@ -1,12 +1,11 @@
 // ignore_for_file: avoid_print
 
-import 'dart:developer';
-
-import 'package:box_booking_project/box_ui/3_otp_mobileno_screen.dart';
-import 'package:box_booking_project/network_and_database/firebase/2user_infoscreen_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:box_booking_project/box_ui/3_otp_mobileno_screen.dart';
+import 'package:box_booking_project/network_and_database/firebase/2user_infoscreen_database.dart';
 
 class SignUpScreen2 extends StatefulWidget {
   const SignUpScreen2({super.key});

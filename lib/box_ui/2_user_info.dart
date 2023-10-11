@@ -4,9 +4,7 @@
 
 import 'package:box_booking_project/box_ui/home_page.dart';
 import 'package:box_booking_project/box_ui/sign_up_screen.dart';
-import 'package:box_booking_project/network_and_database/firebase/2user_infoscreen_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
