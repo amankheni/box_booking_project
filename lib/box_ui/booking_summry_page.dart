@@ -215,7 +215,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                   ),
                 ),
                 SizedBox(
-                  width: 160,
+                  width: 140,
                 ),
                 Text(
                   'Proceed To pay ',

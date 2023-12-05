@@ -1,4 +1,5 @@
 import 'package:box_booking_project/booking_page_controller.dart';
+import 'package:box_booking_project/box_ui/booking_summry_page.dart';
 import 'package:flutter/material.dart';
 
 class BookingPage extends StatefulWidget {
@@ -65,9 +66,24 @@ class _BookingPageState extends State<BookingPage> {
           Expanded(
             child: ListView.builder(
               itemCount: BookingController.boxList.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(BookingController.boxList[index]['boxName']),
-                subtitle: Text(BookingController.boxList[index]['area']),
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BookingSummaryPage(),
+                      ));
+                  setState(() {});
+                },
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 30,
+                    backgroundImage:
+                        AssetImage(BookingController.boxList[index]['asset']),
+                  ),
+                  title: Text(BookingController.boxList[index]['boxName']),
+                  subtitle: Text(BookingController.boxList[index]['area']),
+                ),
               ),
             ),
           ),

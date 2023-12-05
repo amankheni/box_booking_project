@@ -1,4 +1,4 @@
-import 'package:box_booking_project/box_ui/1_spalesh_screen.dart';
+import 'package:box_booking_project/box_ui/booking_page.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const SpleshScreen(),
+      home: const BookingPage(),
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
     );

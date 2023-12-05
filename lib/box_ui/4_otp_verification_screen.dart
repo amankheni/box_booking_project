@@ -1,6 +1,8 @@
 // ignore_for_file: file_names, avoid_print, use_build_context_synchronously
-import 'package:box_booking_project/box_ui/2_user_info.dart';
+import 'dart:developer';
+
 import 'package:box_booking_project/box_ui/3_otp_mobileno_screen.dart';
+import 'package:box_booking_project/box_ui/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
@@ -18,7 +20,8 @@ class OtpVerificationScreen4 extends StatefulWidget {
 
 class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  var code = '';
+  TextEditingController txtotp = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
@@ -76,37 +79,38 @@ class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
                 ),
               ),
               Pinput(
+                controller: txtotp,
                 defaultPinTheme: defaultPinTheme,
                 focusedPinTheme: focusedPinTheme,
                 submittedPinTheme: submittedPinTheme,
-                // validator: (s) {
-                //   return s == '222222' ? null : 'Pin is incorrect';
-                // },
                 pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                 showCursor: true,
-                onCompleted: (pin) => code = pin,
+                onCompleted: (value) {
+                  txtotp.text = value;
+                  setState(() {});
+                },
                 length: 6,
               ),
               MaterialButton(
                 onPressed: () async {
-                  try {
-                    PhoneAuthCredential credential =
-                        PhoneAuthProvider.credential(
-                            verificationId: OtpsendingScreen3.verify,
-                            smsCode: code);
+                  PhoneAuthCredential credential = PhoneAuthProvider.credential(
+                    verificationId: OtpsendingScreen3.verify,
+                    smsCode: txtotp.text,
+                  );
 
-                    // Sign the user in (or link) with the credential
-                    await auth.signInWithCredential(credential);
-                    const SnackBar(content: Text('verified sucsscesfully'));
+                  log(txtotp.text.toString());
+
+                  // Sign the user in (or link) with the credential
+                  await auth.signInWithCredential(credential).then((value) {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const UserInfo2(),
+                          builder: (context) => const HomePage(),
                         ));
-                  } catch (e) {
-                    const Text('Wrong Otp ');
-                    print('wrong otp');
-                  }
+                    const SnackBar(content: Text('verified sucsscesfully'));
+                  }).onError((error, stackTrace) {
+                    print(error.toString());
+                  });
                 },
                 child: const Text('Submit'),
               )
