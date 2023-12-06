@@ -42,6 +42,7 @@ dependencies:
   lottie: ^2.6.0
   pinput: ^3.0.1
   firebase_auth: ^4.9.0
+  date_time_picker: ^2.1.0
 
 dev_dependencies:
   flutter_test:

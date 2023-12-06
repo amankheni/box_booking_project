@@ -1,14 +1,17 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: file_names, avoid_print
+
+import 'package:box_booking_project/box_ui/booking_page.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePageScreen5 extends StatefulWidget {
+  const HomePageScreen5({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePageScreen5> createState() => _HomePageScreen5State();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageScreen5State extends State<HomePageScreen5> {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -213,11 +216,27 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 15,
               ),
-              const Align(
-                alignment: Alignment.topLeft,
-                child: Icon(
-                  CupertinoIcons.calendar_today,
-                ),
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: DateTimePicker(
+                    initialValue: '',
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                    //  dateLabelText: 'date',
+                    icon: const Icon(Icons.date_range_outlined),
+                    onChanged: (val) => print(val),
+                    validator: (val) {
+                      print(val);
+                      return null;
+                    },
+                    onSaved: (val) => print(val),
+                  )
+                  // Icon(
+                  //   CupertinoIcons.calendar_today,
+                  // ),
+                  ),
+              const SizedBox(
+                height: 20,
               ),
               const Align(
                 alignment: Alignment.center,
@@ -234,7 +253,13 @@ class _HomePageState extends State<HomePage> {
             color: const Color.fromARGB(255, 45, 167, 162),
             colorBrightness: Brightness.light,
             focusElevation: 2,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BookingPage(),
+                  ));
+            },
             child: const Padding(
               padding: EdgeInsets.only(left: 70, right: 70),
               child: Text(

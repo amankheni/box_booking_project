@@ -2,7 +2,7 @@
 import 'dart:developer';
 
 import 'package:box_booking_project/box_ui/3_otp_mobileno_screen.dart';
-import 'package:box_booking_project/box_ui/home_page.dart';
+import 'package:box_booking_project/box_ui/5_home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
@@ -87,6 +87,7 @@ class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
                 showCursor: true,
                 onCompleted: (value) {
                   txtotp.text = value;
+                  print('correct');
                   setState(() {});
                 },
                 length: 6,
@@ -105,7 +106,7 @@ class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const HomePage(),
+                          builder: (context) => const HomePageScreen5(),
                         ));
                     const SnackBar(content: Text('verified sucsscesfully'));
                   }).onError((error, stackTrace) {

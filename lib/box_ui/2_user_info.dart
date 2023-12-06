@@ -2,7 +2,7 @@
 // ignore: file_names
 // ignore_for_file: file_names
 
-import 'package:box_booking_project/box_ui/home_page.dart';
+import 'package:box_booking_project/box_ui/5_home_page.dart';
 import 'package:box_booking_project/box_ui/sign_up_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +101,7 @@ class _UserInfo2State extends State<UserInfo2> {
                         .then((value) => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const HomePage(),
+                              builder: (context) => const HomePageScreen5(),
                             )));
                     // await UserInfoScreenFirebase.addUser(
                     //     userName: passWordController.text,
