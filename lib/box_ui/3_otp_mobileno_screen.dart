@@ -7,13 +7,15 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 
 class OtpsendingScreen3 extends StatefulWidget {
   const OtpsendingScreen3({super.key});
-  static String verify = '';
+  // static String verify = '';
 
   @override
   State<OtpsendingScreen3> createState() => _OtpsendingScreen3State();
 }
 
 class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
+  TextEditingController phonrNumber = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +47,7 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: IntlPhoneField(
+                    controller: phonrNumber,
                     decoration: const InputDecoration(
                       labelText: 'Phone Number',
                       border: OutlineInputBorder(
@@ -53,7 +56,10 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                     ),
                     keyboardType: TextInputType.phone,
                     initialCountryCode: 'IN',
-                    onChanged: (value) {},
+                    onSubmitted: (p0) {
+                      phonrNumber.text = p0;
+                      setState(() {});
+                    },
                   ),
                 ),
                 const Text('By proceeding. you agree to the'),
@@ -77,17 +83,17 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                   color: const Color.fromARGB(255, 45, 167, 162),
                   onPressed: () async {
                     await FirebaseAuth.instance.verifyPhoneNumber(
-                      phoneNumber: '+91 9913037095',
+                      phoneNumber: '+91 ${phonrNumber.text}',
                       verificationCompleted:
                           (PhoneAuthCredential credential) {},
                       verificationFailed: (FirebaseAuthException e) {},
-                      codeSent: (String verificationId, int? resendToken) {
-                        OtpVerificationScreen4.verify = verificationId;
+                      codeSent: (verificationId, forceResendingToken) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const OtpVerificationScreen4(),
+                              builder: (context) => OtpVerificationScreen4(
+                                verificationId: verificationId,
+                              ),
                             ));
                       },
                       codeAutoRetrievalTimeout: (String verificationId) {},

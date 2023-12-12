@@ -1,7 +1,6 @@
 // ignore_for_file: file_names, avoid_print, use_build_context_synchronously
 import 'dart:developer';
 
-import 'package:box_booking_project/box_ui/3_otp_mobileno_screen.dart';
 import 'package:box_booking_project/box_ui/5_home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,9 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpVerificationScreen4 extends StatefulWidget {
-  static String? verify;
+  const OtpVerificationScreen4({super.key, required this.verificationId});
 
-  const OtpVerificationScreen4({super.key});
+  final String verificationId;
 
   @override
   State<OtpVerificationScreen4> createState() => _OtpVerificationScreen4State();
@@ -95,7 +94,7 @@ class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
               MaterialButton(
                 onPressed: () async {
                   PhoneAuthCredential credential = PhoneAuthProvider.credential(
-                    verificationId: OtpsendingScreen3.verify,
+                    verificationId: widget.verificationId,
                     smsCode: txtotp.text,
                   );
 

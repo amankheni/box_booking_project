@@ -5,14 +5,14 @@ import 'package:box_booking_project/assets/spalesh_screen_controller.dart';
 import 'package:box_booking_project/box_ui/2_user_info.dart';
 import 'package:flutter/material.dart';
 
-class SpleshScreen extends StatefulWidget {
-  const SpleshScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<SpleshScreen> createState() => _SpleshScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SpleshScreenState extends State<SpleshScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
