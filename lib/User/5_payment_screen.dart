@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:box_booking_project/User/1_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,8 +25,13 @@ class PaymentScreen extends StatefulWidget {
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+class _PaymentScreenState extends State<PaymentScreen>
+    with SingleTickerProviderStateMixin {
   Razorpay? _razorpay;
+  Timer? _timer;
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  int _start = 120; // 2 minutes
 
   @override
   void initState() {
@@ -32,6 +39,70 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _razorpay = Razorpay();
     _razorpay!.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay!.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+
+    // Initialize the animation controller
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: _start),
+    );
+
+    // Create a linear animation from 0 to 1 over the duration of the timer
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller)
+      ..addListener(() {
+        setState(() {}); // Update the progress bar value smoothly
+      });
+
+    _controller.forward(); // Start the animation
+    startTimer(); // Start the countdown timer
+  }
+
+  @override
+  void dispose() {
+    _razorpay?.clear(); // Removes all listeners
+    _timer?.cancel(); // Cancel the timer
+    _controller.dispose(); // Dispose the animation controller
+    super.dispose();
+  }
+
+  void startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_start == 0) {
+        setState(() {
+          timer.cancel();
+          _showTimeoutDialog(); // Show timeout dialog or navigate back
+        });
+      } else {
+        setState(() {
+          _start--;
+        });
+      }
+    });
+  }
+
+  void _showTimeoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Session Timeout'),
+          content: const Text('Your session has timed out. Please try again.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePageScreen5(),
+                  ),
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
@@ -84,7 +155,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePageScreen5(),
+                    builder: (context) => const HomePageScreen5(),
                   ),
                 );
               },
@@ -122,7 +193,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             const SizedBox(height: 10),
             Container(
-              height: 410,
+              height: 330,
               width: 360,
               decoration: BoxDecoration(
                 border: Border.all(
@@ -186,41 +257,53 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     title: Text('Wallet'),
                     subtitle: Text('PhonePe & More'),
                   ),
-                  Divider(),
-                  ListTile(
-                    leading: Image(
-                      height: 45,
-                      width: 45,
-                      image: AssetImage('assets/image/loan.png'),
-                    ),
-                    title: Text('EMI'),
-                    subtitle: Text('EMI via cards & axio'),
-                  ),
+                  //  Divider(),
+                  // ListTile(
+                  //   leading: Image(
+                  //     height: 45,
+                  //     width: 45,
+                  //     image: AssetImage('assets/image/loan.png'),
+                  //   ),
+                  //   title: Text('EMI'),
+                  //   subtitle: Text('EMI via cards & axio'),
+                  // ),
                 ],
               ),
             ),
             const SizedBox(height: 35),
             const Divider(),
-            const Row(
+            Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.watch_later_outlined,
                   color: Colors.grey,
                 ),
-                Text('This page will time out in a few minutes')
+                Text('This page will time out in $_start seconds'),
               ],
             ),
-            const Divider(thickness: 7),
+            const SizedBox(
+              height: 10,
+            ),
+            LinearProgressIndicator(
+              borderRadius: BorderRadius.circular(50),
+              minHeight: 7,
+
+              value:
+                  _animation.value, // Use animation value for smooth progress
+              backgroundColor: const Color.fromARGB(255, 217, 249, 218),
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+            ),
             const Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  'Account',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                Icon(Icons.arrow_drop_up),
+                // Text(
+                //   'Account',
+                //   style: TextStyle(
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 18,
+                //   ),
+                // ),
+                // Icon(Icons.arrow_drop_up),
                 SizedBox(width: 50),
                 Text('Secured by'),
                 Image(
@@ -291,11 +374,5 @@ class _PaymentScreenState extends State<PaymentScreen> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _razorpay?.clear(); // Removes all listeners
-    super.dispose();
   }
 }

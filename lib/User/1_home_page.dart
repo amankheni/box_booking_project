@@ -64,186 +64,159 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
       child: Scaffold(
         drawer: Drawer(
           width: 300,
-          backgroundColor: const Color.fromARGB(255, 216, 247, 240),
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: 50,
-              left: 16,
-              right: 8,
-            ),
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProfileScreen(),
-                      ),
-                    );
-                  },
-                  child: const CircleAvatar(
-                    radius: 45,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person_2_outlined,
-                      color: Colors.black,
-                      size: 50,
-                    ),
+          backgroundColor: Colors.white,
+          child: Column(
+            children: [
+              // User Profile Header
+              Container(
+                padding: const EdgeInsets.only(top: 50, left: 16, right: 16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.teal.shade100, Colors.teal.shade300],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                const Divider(),
-                const SizedBox(
-                  height: 10,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(
-                        Icons.home_outlined,
-                        size: 35,
-                      ),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Text('Home', style: TextStyle(fontSize: 17)),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15),
-                GestureDetector(
-                  onTap: () {},
-                  child: const Row(
-                    children: [
-                      Icon(Icons.info_outline, size: 30),
-                      SizedBox(width: 15),
-                      Text('Box book info', style: TextStyle(fontSize: 17)),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HistoryScreen(),
-                      ),
-                    );
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.history, size: 30),
-                      SizedBox(width: 15),
-                      Text('History', style: TextStyle(fontSize: 17)),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PaymentHistoryScreen(),
-                        ));
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.wallet_rounded, size: 30),
-                      SizedBox(width: 15),
-                      Text('Payment', style: TextStyle(fontSize: 17)),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text(
-                            'Log Out',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfileScreen(),
                           ),
-                          content: const Text(
-                            'Are you sure you want to log out?',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black54,
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          backgroundColor: Colors.white,
-                          elevation: 10,
-                          actionsPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Close the dialog
-                              },
-                              child: Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                await FirebaseAuth.instance.signOut();
-                                if (mounted) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const UserInfo2(), // Replace with your actual screen
-                                    ),
-                                  );
-                                }
-                              },
-                              child: Text(
-                                'Log Out',
-                                style: TextStyle(
-                                  color: Colors.red[700],
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ],
                         );
                       },
-                    );
-                  },
-                  child: const Row(
-                    children: [
-                      Icon(Icons.logout_outlined, size: 30),
-                      SizedBox(width: 15),
-                      Text('Log out', style: TextStyle(fontSize: 17)),
-                    ],
-                  ),
+                      child: const CircleAvatar(
+                        radius: 50,
+                        backgroundImage: AssetImage(
+                            'assets/image/cricket-player- avetar.jpg'), // Replace with actual image path
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const Divider(height: 1, color: Colors.grey),
+              const SizedBox(height: 10),
+
+              // Menu Items
+              _buildMenuItem(
+                context,
+                icon: Icons.home_outlined,
+                text: 'Home',
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              _buildMenuItem(
+                context,
+                icon: Icons.info_outline,
+                text: 'Box Book Info',
+                onTap: () {},
+              ),
+              _buildMenuItem(
+                context,
+                icon: Icons.history,
+                text: 'History',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HistoryScreen(),
+                    ),
+                  );
+                },
+              ),
+              _buildMenuItem(
+                context,
+                icon: Icons.wallet_rounded,
+                text: 'Payment',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PaymentHistoryScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              _buildMenuItem(
+                context,
+                icon: Icons.logout_outlined,
+                text: 'Log out',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text(
+                          'Log Out',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        content: const Text(
+                          'Are you sure you want to log out?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        backgroundColor: Colors.white,
+                        elevation: 10,
+                        actionsPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance.signOut();
+                              if (mounted) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const UserInfo2(), // Replace with your actual screen
+                                  ),
+                                );
+                              }
+                            },
+                            child: Text(
+                              'Log Out',
+                              style: TextStyle(
+                                color: Colors.red[700],
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
         ),
         key: scaffoldKey,
@@ -371,6 +344,33 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(
+    BuildContext context, {
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Row(
+          children: [
+            Icon(icon, size: 30, color: Colors.teal),
+            const SizedBox(width: 15),
+            Text(
+              text,
+              style: const TextStyle(
+                fontSize: 17,
+                color: Colors.black87,
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -73,7 +75,7 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
             .get();
 
         if (boxQuery.docs.isNotEmpty) {
-          final boxData = boxQuery.docs.first.data() as Map<String, dynamic>;
+          final boxData = boxQuery.docs.first.data();
           setState(() {
             _boxId = boxQuery.docs.first.id;
             _boxNameController.text = boxData['boxName'] ?? '';

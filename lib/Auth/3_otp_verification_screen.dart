@@ -1,8 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, file_names
 
-import 'dart:developer';
 import 'package:box_booking_project/Auth/1_log_in_screen.dart';
-import 'package:box_booking_project/User/1_home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
