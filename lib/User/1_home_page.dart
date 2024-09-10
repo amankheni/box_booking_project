@@ -2,6 +2,7 @@
 
 import 'package:box_booking_project/Auth/1_log_in_screen.dart';
 import 'package:box_booking_project/User/2_booking_page.dart';
+import 'package:box_booking_project/User/box_book_info_screen.dart';
 import 'package:box_booking_project/User/history_screen.dart';
 import 'package:box_booking_project/User/payment_history_screen.dart';
 import 'package:box_booking_project/User/profile_screen.dart';
@@ -115,7 +116,13 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                 context,
                 icon: Icons.info_outline,
                 text: 'Box Book Info',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BoxBookInfoScreen(),
+                      ));
+                },
               ),
               _buildMenuItem(
                 context,
