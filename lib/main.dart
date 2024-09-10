@@ -24,11 +24,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) =>
-            SplashScreen(), // Set the splash screen as the initial route
+            const SplashScreen(), // Set the splash screen as the initial route
         '/login': (context) => const UserInfo2(), // Add the login route
         '/adminPanel': (context) =>
             const AdminPanelScreen(), // Add the admin panel route
-        '/home': (context) => HomePageScreen5(), // Add the home route
+        '/home': (context) => const HomePageScreen5(), // Add the home route
       },
       onUnknownRoute: (settings) {
         // Handle unknown routes

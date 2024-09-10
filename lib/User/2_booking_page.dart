@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:box_booking_project/User/3_TimeSlotSelectionPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

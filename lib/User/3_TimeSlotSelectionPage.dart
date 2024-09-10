@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: depend_on_referenced_packages, use_build_context_synchronously, file_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +16,10 @@ class TimeSlotSelectionPage extends StatefulWidget {
 
 class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  List<Map<String, dynamic>> _timeSlots = [];
+  List<Map<String, dynamic>> _todaySlots = [];
+  List<Map<String, dynamic>> _tomorrowSlots = [];
   Set<String> _bookedSlots = {};
-  DateTime _selectedDate = DateTime.now();
+  final DateTime _selectedDate = DateTime.now();
   String? _boxImageUrl;
   String? _boxLocation;
   double? _boxLength;
@@ -42,43 +43,59 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
           .get();
 
       if (boxQuery.docs.isNotEmpty) {
-        final boxData = boxQuery.docs.first.data() as Map<String, dynamic>;
-        final List<dynamic> fetchedTimeSlots = boxData['timeSlots'];
+        final boxData = boxQuery.docs.first.data();
 
-        List<Map<String, dynamic>> generatedSlots = [];
+        // Fetch time slots
+        final todaySlot = boxData['timeSlots']['today'] as Map<String, dynamic>;
+        final tomorrowSlot =
+            boxData['timeSlots']['tomorrow'] as Map<String, dynamic>;
 
-        for (var slot in fetchedTimeSlots) {
-          DateTime startTime = DateTime.parse(slot['startTime']);
-          DateTime endTime = DateTime.parse(slot['endTime']);
+        List<Map<String, dynamic>> todayGeneratedSlots = [];
+        List<Map<String, dynamic>> tomorrowGeneratedSlots = [];
 
-          while (startTime.isBefore(endTime)) {
-            final nextTime = startTime.add(const Duration(minutes: 60));
-            if (nextTime.isAfter(endTime)) break;
+        // Process today's slots
+        DateTime todayStart = DateTime.parse(todaySlot['startTime']);
+        DateTime todayEnd = DateTime.parse(todaySlot['endTime']);
+        while (todayStart.isBefore(todayEnd)) {
+          final nextTime = todayStart.add(const Duration(minutes: 60));
+          if (nextTime.isAfter(todayEnd)) break;
 
-            generatedSlots.add({
-              'startTime': startTime,
-              'endTime': nextTime,
-            });
-            startTime = nextTime;
-          }
+          todayGeneratedSlots.add({
+            'startTime': todayStart,
+            'endTime': nextTime,
+          });
+          todayStart = nextTime;
+        }
+
+        // Process tomorrow's slots
+        DateTime tomorrowStart = DateTime.parse(tomorrowSlot['startTime']);
+        DateTime tomorrowEnd = DateTime.parse(tomorrowSlot['endTime']);
+        while (tomorrowStart.isBefore(tomorrowEnd)) {
+          final nextTime = tomorrowStart.add(const Duration(minutes: 60));
+          if (nextTime.isAfter(tomorrowEnd)) break;
+
+          tomorrowGeneratedSlots.add({
+            'startTime': tomorrowStart,
+            'endTime': nextTime,
+          });
+          tomorrowStart = nextTime;
         }
 
         // Fetch additional box details
         setState(() {
-          _timeSlots = generatedSlots;
-          _boxImageUrl = boxData['imageUrl']; // Fetch box image URL
-          _boxLocation = boxData['location']; // Fetch box location
-          _boxLength = boxData['length']; // Fetch box length
-          _boxWidth = boxData['width']; // Fetch box width
-          _boxHeight = boxData['height']; // Fetch box height
-          _pricePerHour = boxData['pricePerHour']; // Fetch price per hour
+          _todaySlots = todayGeneratedSlots;
+          _tomorrowSlots = tomorrowGeneratedSlots;
+          _boxImageUrl = boxData['imageUrl'];
+          _boxLocation = boxData['location'];
+          _boxLength = boxData['length'];
+          _boxWidth = boxData['width'];
+          _boxHeight = boxData['height'];
+          _pricePerHour = boxData['pricePerHour'];
         });
 
         // Fetch admin details from 'users' collection
-        final adminQuery = await _firestore
-            .collection('users')
-            .doc(boxData['adminId']) // Assuming boxData contains adminId
-            .get();
+        final adminQuery =
+            await _firestore.collection('users').doc(boxData['adminId']).get();
 
         if (adminQuery.exists) {
           final adminData = adminQuery.data() as Map<String, dynamic>;
@@ -117,10 +134,10 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
     }
   }
 
-  void _selectTimeSlot(Map<String, dynamic> timeSlot) {
-    final DateFormat formatter = DateFormat('hh:mm a');
+  void _selectTimeSlot(DateTime startTime, DateTime endTime) {
+    final DateFormat timeFormatter = DateFormat('hh:mm a');
     final String formattedTimeSlot =
-        '${formatter.format(timeSlot['startTime'])} - ${formatter.format(timeSlot['endTime'])}';
+        '${timeFormatter.format(startTime)} - ${timeFormatter.format(endTime)}';
 
     Navigator.push(
       context,
@@ -128,7 +145,7 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
         builder: (context) => BookingSummaryPage(
           boxName: widget.boxName,
           timeSlot: formattedTimeSlot,
-          date: _selectedDate,
+          date: _selectedDate, // Pass the DateTime object directly
         ),
       ),
     );
@@ -202,47 +219,90 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
               const SizedBox(height: 16),
             ],
             Expanded(
-              child: _timeSlots.isNotEmpty
-                  ? ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 16),
-                      itemCount: _timeSlots.length,
-                      itemBuilder: (context, index) {
-                        final timeSlot = _timeSlots[index];
-                        final DateFormat formatter = DateFormat('hh:mm a');
-                        final String formattedTimeSlot =
-                            '${formatter.format(timeSlot['startTime'])} - ${formatter.format(timeSlot['endTime'])}';
+              child: ListView(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                children: [
+                  if (_todaySlots.isNotEmpty) ...[
+                    Text(
+                      'Today (${DateFormat('yyyy-MM-dd').format(DateTime.now())})',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    ..._todaySlots.map((timeSlot) {
+                      final DateFormat formatter = DateFormat('hh:mm a');
+                      final String formattedTimeSlot =
+                          '${formatter.format(timeSlot['startTime'])} - ${formatter.format(timeSlot['endTime'])}';
 
-                        final isBooked = _bookedSlots.contains(
-                            '${timeSlot['startTime'].toIso8601String()} - ${timeSlot['endTime'].toIso8601String()}');
+                      final isBooked = _bookedSlots.contains(
+                          '${timeSlot['startTime'].toIso8601String()} - ${timeSlot['endTime'].toIso8601String()}');
 
-                        return Card(
-                          elevation: 4,
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            title: Text(
-                              formattedTimeSlot,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            tileColor: isBooked ? Colors.grey : Colors.white,
-                            onTap: isBooked
-                                ? null
-                                : () => _selectTimeSlot(timeSlot),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                      return Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          title: Text(
+                            formattedTimeSlot,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        );
-                      },
-                    )
-                  : const Center(
-                      child: Text('No time slots available.'),
+                          tileColor: isBooked ? Colors.grey : Colors.white,
+                          onTap: isBooked
+                              ? null
+                              : () => _selectTimeSlot(
+                                  timeSlot['startTime'], timeSlot['endTime']),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                  if (_tomorrowSlots.isNotEmpty) ...[
+                    Text(
+                      'Tomorrow (${DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 1)))})',
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
+                    const SizedBox(height: 8),
+                    ..._tomorrowSlots.map((timeSlot) {
+                      final DateFormat formatter = DateFormat('hh:mm a');
+                      final String formattedTimeSlot =
+                          '${formatter.format(timeSlot['startTime'])} - ${formatter.format(timeSlot['endTime'])}';
+
+                      final isBooked = _bookedSlots.contains(
+                          '${timeSlot['startTime'].toIso8601String()} - ${timeSlot['endTime'].toIso8601String()}');
+
+                      return Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          title: Text(
+                            formattedTimeSlot,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          tileColor: isBooked ? Colors.grey : Colors.white,
+                          onTap: isBooked
+                              ? null
+                              : () => _selectTimeSlot(
+                                  timeSlot['startTime'], timeSlot['endTime']),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                ],
+              ),
             ),
           ],
         ),

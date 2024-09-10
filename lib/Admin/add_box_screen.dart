@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: unused_field, depend_on_referenced_packages, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,18 +23,19 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
   late TextEditingController _boxNameController;
   late TextEditingController _areaController;
   late TextEditingController _priceController;
-  late TextEditingController _locationController; // Controller for Box Location
-  late TextEditingController _lengthController; // Controller for Length
-  late TextEditingController _widthController; // Controller for Width
-  late TextEditingController _heightController; // Controller for Height
-  late DateTime _startTime;
-  late DateTime _endTime;
-  String? _boxId; // To store the ID of the existing box, if any
-  File? _imageFile; // To store the selected image
-  String? _imageUrl; // To store the uploaded image URL
+  late TextEditingController _locationController;
+  late TextEditingController _lengthController;
+  late TextEditingController _widthController;
+  late TextEditingController _heightController;
+  late DateTime _startTimeToday;
+  late DateTime _endTimeToday;
+  late DateTime _startTimeTomorrow;
+  late DateTime _endTimeTomorrow;
+  String? _boxId;
+  File? _imageFile;
+  String? _imageUrl;
 
-  final DateFormat _timeFormat =
-      DateFormat('h a'); // Format for hours with AM/PM
+  final DateFormat _timeFormat = DateFormat('h a');
 
   @override
   void initState() {
@@ -42,14 +43,15 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
     _boxNameController = TextEditingController();
     _areaController = TextEditingController();
     _priceController = TextEditingController();
-    _locationController =
-        TextEditingController(); // Initialize the new controller
-    _lengthController = TextEditingController(); // Initialize Length controller
-    _widthController = TextEditingController(); // Initialize Width controller
-    _heightController = TextEditingController(); // Initialize Height controller
-    _startTime = DateTime.now();
-    _endTime = _startTime.add(const Duration(hours: 1)); // default 1-hour slot
-    _loadBoxDetails(); // Load box details if editing an existing box
+    _locationController = TextEditingController();
+    _lengthController = TextEditingController();
+    _widthController = TextEditingController();
+    _heightController = TextEditingController();
+    _startTimeToday = DateTime.now();
+    _endTimeToday = _startTimeToday.add(const Duration(hours: 1));
+    _startTimeTomorrow = DateTime.now().add(const Duration(days: 1));
+    _endTimeTomorrow = _startTimeTomorrow.add(const Duration(hours: 1));
+    _loadBoxDetails();
   }
 
   @override
@@ -57,10 +59,10 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
     _boxNameController.dispose();
     _areaController.dispose();
     _priceController.dispose();
-    _locationController.dispose(); // Dispose the new controller
-    _lengthController.dispose(); // Dispose Length controller
-    _widthController.dispose(); // Dispose Width controller
-    _heightController.dispose(); // Dispose Height controller
+    _locationController.dispose();
+    _lengthController.dispose();
+    _widthController.dispose();
+    _heightController.dispose();
     super.dispose();
   }
 
@@ -81,16 +83,18 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
             _boxNameController.text = boxData['boxName'] ?? '';
             _areaController.text = boxData['area'] ?? '';
             _priceController.text = (boxData['pricePerHour'] ?? 0.0).toString();
-            _locationController.text =
-                boxData['location'] ?? ''; // Load Box Location
-            _lengthController.text =
-                (boxData['length'] ?? '').toString(); // Load Length
-            _widthController.text =
-                (boxData['width'] ?? '').toString(); // Load Width
-            _heightController.text =
-                (boxData['height'] ?? '').toString(); // Load Height
-            _startTime = DateTime.parse(boxData['timeSlots'][0]['startTime']);
-            _endTime = DateTime.parse(boxData['timeSlots'][0]['endTime']);
+            _locationController.text = boxData['location'] ?? '';
+            _lengthController.text = (boxData['length'] ?? '').toString();
+            _widthController.text = (boxData['width'] ?? '').toString();
+            _heightController.text = (boxData['height'] ?? '').toString();
+            _startTimeToday =
+                DateTime.parse(boxData['timeSlots']['today']['startTime']);
+            _endTimeToday =
+                DateTime.parse(boxData['timeSlots']['today']['endTime']);
+            _startTimeTomorrow =
+                DateTime.parse(boxData['timeSlots']['tomorrow']['startTime']);
+            _endTimeTomorrow =
+                DateTime.parse(boxData['timeSlots']['tomorrow']['endTime']);
             _imageUrl = boxData['imageUrl'];
           });
         }
@@ -146,21 +150,22 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
           'boxName': _boxNameController.text.trim(),
           'area': _areaController.text.trim(),
           'pricePerHour': double.tryParse(_priceController.text.trim()) ?? 0.0,
-          'location': _locationController.text.trim(), // Save Box Location
-          'length': double.tryParse(_lengthController.text.trim()) ??
-              0.0, // Save Length
-          'width': double.tryParse(_widthController.text.trim()) ??
-              0.0, // Save Width
-          'height': double.tryParse(_heightController.text.trim()) ??
-              0.0, // Save Height
-          'timeSlots': [
-            {
-              'startTime': _startTime.toIso8601String(),
-              'endTime': _endTime.toIso8601String(),
-            }
-          ],
+          'location': _locationController.text.trim(),
+          'length': double.tryParse(_lengthController.text.trim()) ?? 0.0,
+          'width': double.tryParse(_widthController.text.trim()) ?? 0.0,
+          'height': double.tryParse(_heightController.text.trim()) ?? 0.0,
+          'timeSlots': {
+            'today': {
+              'startTime': _startTimeToday.toIso8601String(),
+              'endTime': _endTimeToday.toIso8601String(),
+            },
+            'tomorrow': {
+              'startTime': _startTimeTomorrow.toIso8601String(),
+              'endTime': _endTimeTomorrow.toIso8601String(),
+            },
+          },
           'adminId': user.uid,
-          'createdDate': FieldValue.serverTimestamp(), // Store the current date
+          'createdDate': FieldValue.serverTimestamp(),
           'imageUrl': imageUrl,
         };
 
@@ -181,14 +186,14 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
         _boxNameController.clear();
         _areaController.clear();
         _priceController.clear();
-        _locationController.clear(); // Clear the new field
-        _lengthController.clear(); // Clear Length field
-        _widthController.clear(); // Clear Width field
-        _heightController.clear(); // Clear Height field
+        _locationController.clear();
+        _lengthController.clear();
+        _widthController.clear();
+        _heightController.clear();
         setState(() {
-          _boxId = null; // Reset box ID after saving
-          _imageFile = null; // Clear selected image
-          _imageUrl = null; // Clear image URL
+          _boxId = null;
+          _imageFile = null;
+          _imageUrl = null;
         });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -199,10 +204,12 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
   }
 
   Future<void> _selectTime(BuildContext context,
-      {required bool isStartTime}) async {
+      {required bool isStartTime, required bool isToday}) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(isStartTime ? _startTime : _endTime),
+      initialTime: TimeOfDay.fromDateTime(isStartTime
+          ? (isToday ? _startTimeToday : _startTimeTomorrow)
+          : (isToday ? _endTimeToday : _endTimeTomorrow)),
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
@@ -214,23 +221,43 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
     if (picked != null) {
       setState(() {
         if (isStartTime) {
-          _startTime = DateTime(
-            _startTime.year,
-            _startTime.month,
-            _startTime.day,
-            picked.hour,
-            0, // Set minutes to 0
-          );
-          _endTime =
-              _startTime.add(const Duration(hours: 1)); // default 1-hour slot
+          if (isToday) {
+            _startTimeToday = DateTime(
+              _startTimeToday.year,
+              _startTimeToday.month,
+              _startTimeToday.day,
+              picked.hour,
+              0,
+            );
+            _endTimeToday = _startTimeToday.add(const Duration(hours: 1));
+          } else {
+            _startTimeTomorrow = DateTime(
+              _startTimeTomorrow.year,
+              _startTimeTomorrow.month,
+              _startTimeTomorrow.day,
+              picked.hour,
+              0,
+            );
+            _endTimeTomorrow = _startTimeTomorrow.add(const Duration(hours: 1));
+          }
         } else {
-          _endTime = DateTime(
-            _endTime.year,
-            _endTime.month,
-            _endTime.day,
-            picked.hour,
-            0, // Set minutes to 0
-          );
+          if (isToday) {
+            _endTimeToday = DateTime(
+              _endTimeToday.year,
+              _endTimeToday.month,
+              _endTimeToday.day,
+              picked.hour,
+              0,
+            );
+          } else {
+            _endTimeTomorrow = DateTime(
+              _endTimeTomorrow.year,
+              _endTimeTomorrow.month,
+              _endTimeTomorrow.day,
+              picked.hour,
+              0,
+            );
+          }
         }
       });
     }
@@ -240,107 +267,104 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add/Edit Box Details'),
+        title: const Text('Add/Edit Box'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: Container(
-                  width: double.infinity,
-                  height: 200,
-                  color: Colors.grey[200],
-                  child: _imageFile == null
-                      ? Center(
-                          child: _imageUrl != null
-                              ? Image.network(_imageUrl!)
-                              : Text('Select Image'))
-                      : Image.file(_imageFile!, fit: BoxFit.cover),
-                ),
-              ),
-              const SizedBox(height: 10),
               TextField(
                 controller: _boxNameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Box Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Box Name'),
               ),
-              const SizedBox(height: 10),
               TextField(
                 controller: _areaController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Area',
-                ),
+                decoration: const InputDecoration(labelText: 'Area'),
+                keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
               TextField(
                 controller: _priceController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Price Per Hour',
-                  prefixText: '₹ ',
-                ),
+                decoration: const InputDecoration(labelText: 'Price per Hour'),
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
               TextField(
-                controller:
-                    _locationController, // New TextField for Box Location
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Location',
-                ),
-                maxLines: 3,
+                controller: _locationController,
+                decoration: const InputDecoration(labelText: 'Location'),
               ),
-              const SizedBox(height: 10),
               TextField(
-                controller: _lengthController, // New TextField for Length
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Length (ft)',
-                ),
+                controller: _lengthController,
+                decoration: const InputDecoration(labelText: 'Length'),
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
               TextField(
-                controller: _widthController, // New TextField for Width
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Width (ft)',
-                ),
+                controller: _widthController,
+                decoration: const InputDecoration(labelText: 'Width'),
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
               TextField(
-                controller: _heightController, // New TextField for Height
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Height (ft)',
-                ),
+                controller: _heightController,
+                decoration: const InputDecoration(labelText: 'Height'),
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
-              ListTile(
-                title: Text("Start Time: ${_timeFormat.format(_startTime)}"),
-                trailing: const Icon(Icons.access_time),
-                onTap: () => _selectTime(context, isStartTime: true),
+              const SizedBox(height: 16),
+              Text(
+                  'Today: ${_timeFormat.format(_startTimeToday)} - ${_timeFormat.format(_endTimeToday)}'),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _selectTime(context,
+                          isStartTime: true, isToday: true),
+                      child: const Text('Select Today Start Time'),
+                    ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _selectTime(context,
+                          isStartTime: false, isToday: true),
+                      child: const Text('Select Today End Time'),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
-              ListTile(
-                title: Text("End Time: ${_timeFormat.format(_endTime)}"),
-                trailing: const Icon(Icons.access_time),
-                onTap: () => _selectTime(context, isStartTime: false),
+              const SizedBox(height: 16),
+              Text(
+                  'Tomorrow: ${_timeFormat.format(_startTimeTomorrow)} - ${_timeFormat.format(_endTimeTomorrow)}'),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _selectTime(context,
+                          isStartTime: true, isToday: false),
+                      child: const Text('Select Tomorrow Start Time'),
+                    ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _selectTime(context,
+                          isStartTime: false, isToday: false),
+                      child: const Text('Select Tomorrow End Time'),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: const Text('Pick Image'),
+              ),
+              if (_imageFile != null)
+                Image.file(
+                  _imageFile!,
+                  height: 100,
+                ),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _saveBoxDetails,
-                child: Text(_boxId != null ? 'Update Box' : 'Add Box'),
+                child: const Text('Save Box Details'),
               ),
             ],
           ),

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, file_names, avoid_print
 
 import 'package:box_booking_project/User/1_home_page.dart';
 import 'package:box_booking_project/Auth/sign_up_screen.dart';
@@ -60,7 +60,7 @@ class _UserInfo2State extends State<UserInfo2> {
           } else {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomePageScreen5()),
+              MaterialPageRoute(builder: (context) => const HomePageScreen5()),
             );
           }
         }

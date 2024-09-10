@@ -6,7 +6,6 @@ import 'package:box_booking_project/User/history_screen.dart';
 import 'package:box_booking_project/User/payment_history_screen.dart';
 import 'package:box_booking_project/User/profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,7 +26,6 @@ class HomePageScreen5 extends StatefulWidget {
 
 class _HomePageScreen5State extends State<HomePageScreen5> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
   List<BookedSlot> _bookedSlots = [];
 
   @override
@@ -43,15 +41,19 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
         .where('userId', isEqualTo: userId)
         .get();
 
-    final bookedSlots = bookingsQuery.docs.map((doc) {
-      final data = doc.data();
-      return BookedSlot(
-        boxName: data['boxName'],
-        timeSlot: data['timeSlot'],
-        date: DateTime.parse(data['date']),
-        //   totalCost: data['totalCost']! // Uncomment if you need this field
-      );
-    }).toList();
+    final twoDaysAgo = DateTime.now().subtract(const Duration(days: 2));
+
+    final bookedSlots = bookingsQuery.docs
+        .map((doc) {
+          final data = doc.data();
+          return BookedSlot(
+            boxName: data['boxName'],
+            timeSlot: data['timeSlot'],
+            date: DateTime.parse(data['date']),
+          );
+        })
+        .where((slot) => slot.date.isAfter(twoDaysAgo))
+        .toList();
 
     setState(() {
       _bookedSlots = bookedSlots;
@@ -67,7 +69,6 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
           backgroundColor: Colors.white,
           child: Column(
             children: [
-              // User Profile Header
               Container(
                 padding: const EdgeInsets.only(top: 50, left: 16, right: 16),
                 decoration: BoxDecoration(
@@ -91,7 +92,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                       child: const CircleAvatar(
                         radius: 50,
                         backgroundImage: AssetImage(
-                            'assets/image/cricket-player- avetar.jpg'), // Replace with actual image path
+                            'assets/image/cricket-player- avetar.jpg'),
                         backgroundColor: Colors.transparent,
                       ),
                     ),
@@ -102,8 +103,6 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
               ),
               const Divider(height: 1, color: Colors.grey),
               const SizedBox(height: 10),
-
-              // Menu Items
               _buildMenuItem(
                 context,
                 icon: Icons.home_outlined,
@@ -126,7 +125,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HistoryScreen(),
+                      builder: (context) => const HistoryScreen(),
                     ),
                   );
                 },
@@ -144,7 +143,6 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                   );
                 },
               ),
-
               _buildMenuItem(
                 context,
                 icon: Icons.logout_outlined,
@@ -259,18 +257,6 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Align(
-              //   alignment: Alignment.topLeft,
-              //   child: DateTimePicker(
-              //     initialValue: '',
-              //     firstDate: DateTime(2000),
-              //     lastDate: DateTime(2100),
-              //     icon: const Icon(Icons.date_range_outlined),
-              //     onChanged: (val) => print(val),
-              //     validator: (val) => null,
-              //     onSaved: (val) => print(val),
-              //   ),
-              // ),
               const Text(
                 'Your Booked Slot',
                 style: TextStyle(fontSize: 20),
@@ -386,6 +372,6 @@ class BookedSlot {
     required this.boxName,
     required this.timeSlot,
     required this.date,
-    double? totalCost, // Remove or use if needed
+    double? totalCost,
   });
 }

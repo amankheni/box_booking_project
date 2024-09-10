@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:box_booking_project/Admin/add_box_screen.dart';
 import 'package:box_booking_project/Admin/admin_profile_screen.dart';
 import 'package:box_booking_project/Admin/dashbord_screen.dart';

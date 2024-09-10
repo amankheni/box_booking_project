@@ -1,6 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:box_booking_project/Auth/2_otp_mobileno_screen.dart';
-import 'package:box_booking_project/User/profile_screen.dart';
-import 'package:box_booking_project/network_and_database/firebase/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
