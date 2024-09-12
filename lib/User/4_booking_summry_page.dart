@@ -1,5 +1,3 @@
-// ignore_for_file: file_names, depend_on_referenced_packages, avoid_print
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -24,13 +22,11 @@ class BookingSummaryPage extends StatefulWidget {
 class _BookingSummaryPageState extends State<BookingSummaryPage> {
   double _pricePerHour = 0.0;
   bool _isLoading = true;
-  List<Map<String, dynamic>> _timeSlots = [];
 
   @override
   void initState() {
     super.initState();
     _fetchBoxPrice();
-    _fetchTimeSlots();
   }
 
   Future<void> _fetchBoxPrice() async {
@@ -71,51 +67,6 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
     }
   }
 
-  Future<void> _fetchTimeSlots() async {
-    try {
-      // Fetch time slots for the given date
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('boxes')
-          .where('boxName', isEqualTo: widget.boxName)
-          .limit(1)
-          .get();
-
-      if (snapshot.docs.isNotEmpty) {
-        DocumentSnapshot doc = snapshot.docs.first;
-        var data = doc.data() as Map<String, dynamic>?;
-
-        if (data != null) {
-          List<dynamic> slots = data['timeSlots'] ?? [];
-          List<Map<String, dynamic>> filteredSlots = slots
-              .where((slot) =>
-                  DateTime.parse(slot['date']).isAtSameMomentAs(widget.date))
-              .map((slot) => slot as Map<String, dynamic>)
-              .toList();
-
-          setState(() {
-            _timeSlots = filteredSlots;
-            _isLoading = false;
-          });
-        } else {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      } else {
-        // Handle the case where no document was found
-        setState(() {
-          _isLoading = false;
-        });
-        print('No box found with the given name.');
-      }
-    } catch (e) {
-      print('Error fetching time slots: $e');
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final parts = widget.timeSlot.split(' - ');
@@ -124,6 +75,9 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
     final duration = endTime.difference(startTime).inHours;
 
     final totalCost = duration * _pricePerHour;
+
+    // Formatting the selected date
+    final formattedDate = DateFormat('dd MMM yyyy').format(widget.date);
 
     return SafeArea(
       child: Scaffold(
@@ -183,7 +137,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            DateFormat('dd MMM yyyy').format(widget.date),
+                            formattedDate,
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 10),
@@ -242,50 +196,6 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    // Time Slots List
-                    const Text(
-                      'Available Time Slots',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ..._timeSlots.map((slot) {
-                      final startTime = DateFormat('hh:mm a')
-                          .format(DateTime.parse(slot['startTime']));
-                      final endTime = DateFormat('hh:mm a')
-                          .format(DateTime.parse(slot['endTime']));
-                      return Container(
-                        padding: const EdgeInsets.all(16.0),
-                        margin: const EdgeInsets.only(bottom: 10.0),
-                        decoration: BoxDecoration(
-                          color: Colors.teal.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '$startTime - $endTime',
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              '₹ ${_pricePerHour.toStringAsFixed(2)} /hr',
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
                     const SizedBox(height: 20),
                     // Booking Summary
                     const Text(
@@ -350,7 +260,8 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                         builder: (context) => PaymentScreen(
                           boxName: widget.boxName,
                           timeSlot: widget.timeSlot,
-                          date: widget.date,
+                          date: widget
+                              .date, // Ensure this is not null and properly initialized
                           totalCost: totalCost,
                         ),
                       ),

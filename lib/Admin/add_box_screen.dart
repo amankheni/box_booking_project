@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart'; // For date formatting
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -47,23 +48,17 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
     _lengthController = TextEditingController();
     _widthController = TextEditingController();
     _heightController = TextEditingController();
-    _startTimeToday = DateTime.now();
-    _endTimeToday = _startTimeToday.add(const Duration(hours: 1));
-    _startTimeTomorrow = DateTime.now().add(const Duration(days: 1));
-    _endTimeTomorrow = _startTimeTomorrow.add(const Duration(hours: 1));
+
+    _initializeTimeSlots();
     _loadBoxDetails();
   }
 
-  @override
-  void dispose() {
-    _boxNameController.dispose();
-    _areaController.dispose();
-    _priceController.dispose();
-    _locationController.dispose();
-    _lengthController.dispose();
-    _widthController.dispose();
-    _heightController.dispose();
-    super.dispose();
+  void _initializeTimeSlots() {
+    final now = DateTime.now();
+    _startTimeToday = DateTime(now.year, now.month, now.day, now.hour);
+    _endTimeToday = DateTime(now.year, now.month, now.day, 23, 59);
+    _startTimeTomorrow = DateTime(now.year, now.month, now.day + 1, now.hour);
+    _endTimeTomorrow = DateTime(now.year, now.month, now.day + 1, 23, 59);
   }
 
   Future<void> _loadBoxDetails() async {
@@ -96,6 +91,7 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
             _endTimeTomorrow =
                 DateTime.parse(boxData['timeSlots']['tomorrow']['endTime']);
             _imageUrl = boxData['imageUrl'];
+            _updateTimeSlots(); // Update the time slots based on the current time
           });
         }
       } catch (e) {
@@ -106,41 +102,19 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  void _updateTimeSlots() {
+    final now = DateTime.now();
 
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+    // Update only today’s time slots
+    if (_endTimeToday.isBefore(now)) {
+      _startTimeToday = now;
+      _endTimeToday = DateTime(now.year, now.month, now.day, 23, 59);
     }
+
+    // Keep tomorrow’s time slots as set by the admin
   }
 
-  Future<String?> _uploadImage() async {
-    if (_imageFile == null) return null;
-
-    try {
-      final user = _auth.currentUser;
-      if (user == null) return null;
-
-      final storageRef = _storage
-          .ref()
-          .child('box_images/${user.uid}/${DateTime.now().toIso8601String()}');
-      final uploadTask = storageRef.putFile(_imageFile!);
-      final snapshot = await uploadTask.whenComplete(() => {});
-      final downloadUrl = await snapshot.ref.getDownloadURL();
-
-      return downloadUrl;
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error uploading image: $e')),
-      );
-      return null;
-    }
-  }
-
-  Future<void> _saveBoxDetails() async {
+  Future<void> _updateBoxDetails() async {
     User? user = _auth.currentUser;
     if (user != null) {
       try {
@@ -197,9 +171,32 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
         });
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving box details: $e')),
+          SnackBar(content: Text('Error updating box details: $e')),
         );
       }
+    }
+  }
+
+  Future<String?> _uploadImage() async {
+    if (_imageFile == null) return null;
+
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return null;
+
+      final storageRef = _storage
+          .ref()
+          .child('box_images/${user.uid}/${DateTime.now().toIso8601String()}');
+      final uploadTask = storageRef.putFile(_imageFile!);
+      final snapshot = await uploadTask.whenComplete(() => {});
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      return downloadUrl;
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error uploading image: $e')),
+      );
+      return null;
     }
   }
 
@@ -263,6 +260,17 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
     }
   }
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -276,33 +284,54 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                height: 10.sp,
+              ),
               TextField(
                 controller: _boxNameController,
                 decoration: const InputDecoration(labelText: 'Box Name'),
+              ),
+              SizedBox(
+                height: 10.sp,
               ),
               TextField(
                 controller: _areaController,
                 decoration: const InputDecoration(labelText: 'Area'),
                 keyboardType: TextInputType.number,
               ),
+              SizedBox(
+                height: 10.sp,
+              ),
               TextField(
                 controller: _priceController,
                 decoration: const InputDecoration(labelText: 'Price per Hour'),
                 keyboardType: TextInputType.number,
               ),
+              SizedBox(
+                height: 10.sp,
+              ),
               TextField(
                 controller: _locationController,
                 decoration: const InputDecoration(labelText: 'Location'),
+              ),
+              SizedBox(
+                height: 10.sp,
               ),
               TextField(
                 controller: _lengthController,
                 decoration: const InputDecoration(labelText: 'Length'),
                 keyboardType: TextInputType.number,
               ),
+              SizedBox(
+                height: 10.sp,
+              ),
               TextField(
                 controller: _widthController,
                 decoration: const InputDecoration(labelText: 'Width'),
                 keyboardType: TextInputType.number,
+              ),
+              SizedBox(
+                height: 10.sp,
               ),
               TextField(
                 controller: _heightController,
@@ -363,7 +392,7 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
                 ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _saveBoxDetails,
+                onPressed: _updateBoxDetails,
                 child: const Text('Save Box Details'),
               ),
             ],

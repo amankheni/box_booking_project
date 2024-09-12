@@ -260,16 +260,6 @@ class _PaymentScreenState extends State<PaymentScreen>
                     title: Text('Wallet'),
                     subtitle: Text('PhonePe & More'),
                   ),
-                  //  Divider(),
-                  // ListTile(
-                  //   leading: Image(
-                  //     height: 45,
-                  //     width: 45,
-                  //     image: AssetImage('assets/image/loan.png'),
-                  //   ),
-                  //   title: Text('EMI'),
-                  //   subtitle: Text('EMI via cards & axio'),
-                  // ),
                 ],
               ),
             ),
@@ -290,7 +280,6 @@ class _PaymentScreenState extends State<PaymentScreen>
             LinearProgressIndicator(
               borderRadius: BorderRadius.circular(50),
               minHeight: 7,
-
               value:
                   _animation.value, // Use animation value for smooth progress
               backgroundColor: const Color.fromARGB(255, 217, 249, 218),
@@ -299,14 +288,6 @@ class _PaymentScreenState extends State<PaymentScreen>
             const Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // Text(
-                //   'Account',
-                //   style: TextStyle(
-                //     fontWeight: FontWeight.bold,
-                //     fontSize: 18,
-                //   ),
-                // ),
-                // Icon(Icons.arrow_drop_up),
                 SizedBox(width: 50),
                 Text('Secured by'),
                 Image(

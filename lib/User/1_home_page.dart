@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, file_names, use_build_context_synchronously, avoid_print
 
-import 'package:box_booking_project/Auth/1_log_in_screen.dart';
+import 'package:box_booking_project/Admin/add_box_screen.dart';
+import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
 import 'package:box_booking_project/User/2_booking_page.dart';
 import 'package:box_booking_project/User/box_book_info_screen.dart';
 import 'package:box_booking_project/User/history_screen.dart';
@@ -9,6 +10,8 @@ import 'package:box_booking_project/User/profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 //-----------
@@ -65,13 +68,14 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         drawer: Drawer(
-          width: 300,
+          width: 300.sp,
           backgroundColor: Colors.white,
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.only(top: 50, left: 16, right: 16),
+                padding: EdgeInsets.only(top: 50.sp, left: 16.sp, right: 16.sp),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Colors.teal.shade100, Colors.teal.shade300],
@@ -90,20 +94,20 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                           ),
                         );
                       },
-                      child: const CircleAvatar(
-                        radius: 50,
-                        backgroundImage: AssetImage(
+                      child: CircleAvatar(
+                        radius: 50.sp,
+                        backgroundImage: const AssetImage(
                             'assets/image/cricket-player- avetar.jpg'),
                         backgroundColor: Colors.transparent,
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 10.sp),
+                    SizedBox(height: 20.sp),
                   ],
                 ),
               ),
-              const Divider(height: 1, color: Colors.grey),
-              const SizedBox(height: 10),
+              Divider(height: 1.sp, color: Colors.grey),
+              SizedBox(height: 10.sp),
               _buildMenuItem(
                 context,
                 icon: Icons.home_outlined,
@@ -120,7 +124,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BoxBookInfoScreen(),
+                        builder: (context) => const BoxBookInfoScreen(),
                       ));
                 },
               ),
@@ -159,18 +163,18 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: const Text(
+                        title: Text(
                           'Log Out',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.black87,
                           ),
                         ),
-                        content: const Text(
+                        content: Text(
                           'Are you sure you want to log out?',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             color: Colors.black54,
                           ),
                         ),
@@ -179,8 +183,8 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                         ),
                         backgroundColor: Colors.white,
                         elevation: 10,
-                        actionsPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
+                        actionsPadding: EdgeInsets.symmetric(
+                            horizontal: 20.sp, vertical: 12.sp),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -202,7 +206,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const UserInfo2(), // Replace with your actual screen
+                                        SingInScreen1(), // Replace with your actual screen
                                   ),
                                 );
                               }
@@ -211,7 +215,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                               'Log Out',
                               style: TextStyle(
                                 color: Colors.red[700],
-                                fontSize: 16,
+                                fontSize: 16.sp,
                               ),
                             ),
                           ),
@@ -226,7 +230,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
         ),
         key: scaffoldKey,
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.sp),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -236,24 +240,25 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                     onTap: () {
                       scaffoldKey.currentState?.openDrawer();
                     },
-                    child: const Icon(
+                    child: Icon(
                       Icons.menu_open_rounded,
-                      color: Color.fromARGB(255, 13, 124, 120),
-                      size: 30,
+                      color: const Color.fromARGB(255, 13, 124, 120),
+                      size: 30.sp,
                     ),
                   ),
-                  const SizedBox(width: 40),
-                  const Text(
-                    'Box Cricket Booking',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  SizedBox(width: 13.sp),
+                  Text(
+                    'Book My Box',
+                    style:
+                        TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              const Divider(thickness: 3),
-              const SizedBox(height: 10),
+              SizedBox(height: 7.sp),
+              Divider(thickness: 2.sp),
+              SizedBox(height: 7.sp),
               Container(
-                height: 200,
+                height: 190.sp,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -263,62 +268,88 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 15.sp),
+              Text(
                 'Your Booked Slot',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 18.sp),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: 2.sp),
               const Divider(),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.sp),
               Expanded(
-                child: ListView.builder(
-                  itemCount: _bookedSlots.length,
-                  itemBuilder: (context, index) {
-                    final slot = _bookedSlots[index];
-                    return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8.0),
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
+                child: _bookedSlots.isEmpty
+                    ? Center(
+                        child: Column(
+                          children: [
+                            Opacity(
+                              opacity: 0.7.sp,
+                              child: Image(
+                                height: 230.sp,
+                                width: 230.sp,
+                                image: const AssetImage(
+                                    'assets/image/slot_book.jpg'),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                'No bookings. Book a slot.',
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(fontSize: 13.sp),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(16.0),
-                          leading: const CircleAvatar(
-                            backgroundColor: Colors.blueAccent,
-                            child: Icon(
-                              Icons.event,
-                              color: Colors.white,
-                              size: 30,
+                      )
+                    : ListView.builder(
+                        itemCount: _bookedSlots.length,
+                        itemBuilder: (context, index) {
+                          final slot = _bookedSlots[index];
+
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8.0.sp),
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
-                          ),
-                          title: Text(
-                            slot.boxName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                            child: ListTile(
+                              contentPadding: EdgeInsets.all(16.0.sp),
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.blueAccent,
+                                child: Icon(
+                                  Icons.event,
+                                  color: Colors.white,
+                                  size: 30.sp,
+                                ),
+                              ),
+                              title: Text(
+                                slot.boxName,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.sp,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '${slot.timeSlot} - ${DateFormat('dd MMM yyyy').format(slot.date)}',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 16.sp,
+                                ),
+                              ),
                             ),
-                          ),
-                          subtitle: Text(
-                            '${slot.timeSlot} - ${DateFormat('dd MMM yyyy').format(slot.date)}',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 16,
-                            ),
-                          ),
-                        ));
-                  },
-                ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(24.sp),
           child: MaterialButton(
             color: const Color.fromARGB(255, 45, 167, 162),
             colorBrightness: Brightness.light,
-            focusElevation: 2,
+            focusElevation: 2.sp,
             onPressed: () {
               Navigator.push(
                 context,
@@ -327,12 +358,13 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                 ),
               );
             },
-            child: const Padding(
-              padding: EdgeInsets.only(left: 70, right: 70),
+            child: Padding(
+              padding: EdgeInsets.only(left: 70.sp, right: 70.sp),
               child: Text(
                 'Book now',
                 style: TextStyle(
                   color: Colors.white,
+                  fontSize: 16.sp,
                 ),
               ),
             ),
@@ -351,15 +383,15 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 12.sp, horizontal: 16.sp),
         child: Row(
           children: [
-            Icon(icon, size: 30, color: Colors.teal),
-            const SizedBox(width: 15),
+            Icon(icon, size: 30.sp, color: Colors.teal),
+            SizedBox(width: 15.sp),
             Text(
               text,
-              style: const TextStyle(
-                fontSize: 17,
+              style: TextStyle(
+                fontSize: 17.sp,
                 color: Colors.black87,
               ),
             ),

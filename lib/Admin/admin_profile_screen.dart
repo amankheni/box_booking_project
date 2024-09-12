@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:box_booking_project/Auth/1_log_in_screen.dart';
+import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +97,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
               await _auth.signOut();
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const UserInfo2()),
+                MaterialPageRoute(builder: (context) => SingInScreen1()),
               );
             },
           ),

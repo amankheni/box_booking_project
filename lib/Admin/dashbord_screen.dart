@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
 
-import 'package:box_booking_project/Auth/1_log_in_screen.dart';
+import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class AdminDashboardScreen extends StatelessWidget {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const UserInfo2()),
+                MaterialPageRoute(builder: (context) => SingInScreen1()),
               );
             },
           ),
@@ -49,10 +49,20 @@ class AdminDashboardScreen extends StatelessWidget {
                 timeSlot: data['timeSlot'] ?? 'No Time Slot',
                 date: DateTime.tryParse(data['date'] ?? '') ?? DateTime.now(),
                 totalCost: data['totalCost']?.toDouble(),
-                phoneNumber:
-                    data['phoneNumber'] ?? 'N/A', // Add phoneNumber field
+                phoneNumber: data['phoneNumber'] ?? 'N/A',
               );
             }).toList();
+
+            // Sort bookings by date and time slot in descending order
+            bookings.sort((a, b) {
+              final dateComparison = b.date
+                  .compareTo(a.date); // Reverse comparison for descending order
+              if (dateComparison != 0) {
+                return dateComparison;
+              }
+              return b.timeSlot.compareTo(
+                  a.timeSlot); // Reverse comparison for descending order
+            });
 
             return ListView.builder(
               itemCount: bookings.length,
@@ -74,13 +84,12 @@ class AdminDashboardScreen extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      '${slot.timeSlot} - ${DateFormat('dd MMM yyyy').format(slot.date)}\nPhone: ${slot.phoneNumber}', // Display phone number
+                      '${slot.timeSlot} - ${DateFormat('dd MMM yyyy').format(slot.date)}\nPhone: ${slot.phoneNumber}',
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 16,
                       ),
                     ),
-                    //  Uncomment and handle totalCost if needed
                     trailing: Text(
                       '₹ ${slot.totalCost?.toStringAsFixed(2) ?? '0.00'}',
                       style: const TextStyle(
@@ -106,13 +115,13 @@ class BookedSlot {
   final String timeSlot;
   final DateTime date;
   final double? totalCost;
-  final String phoneNumber; // Add this field
+  final String phoneNumber;
 
   BookedSlot({
     required this.username,
     required this.timeSlot,
     required this.date,
     this.totalCost,
-    required this.phoneNumber, // Add this parameter
+    required this.phoneNumber,
   });
 }
