@@ -87,6 +87,7 @@ class _PaymentScreenState extends State<PaymentScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Session Timeout'),
           content: const Text('Your session has timed out. Please try again.'),
           actions: [
@@ -148,6 +149,7 @@ class _PaymentScreenState extends State<PaymentScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text('Payment Successful'),
           content: const Text('Your payment was processed successfully.'),
           actions: [
@@ -174,7 +176,7 @@ class _PaymentScreenState extends State<PaymentScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade50,
+        backgroundColor: Colors.teal,
         title: const Text('Payment Options'),
         centerTitle: true,
       ),

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart'; // Ensure you have this package in pubspec.yaml
 
 class HistoryScreen extends StatefulWidget {
@@ -62,31 +63,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0.sp),
             itemCount: bookedSlots.length,
             itemBuilder: (context, index) {
               final slot = bookedSlots[index];
               return Card(
-                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                margin: EdgeInsets.symmetric(vertical: 8.0.sp),
                 elevation: 5,
+                color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
+                  borderRadius: BorderRadius.circular(12.0.sp),
                 ),
                 child: ListTile(
-                  contentPadding: const EdgeInsets.all(16.0),
+                  contentPadding: EdgeInsets.all(16.0.sp),
                   leading: CircleAvatar(
                     backgroundColor: Colors.teal.shade100,
-                    child: const Icon(
+                    child: Icon(
                       Icons.sports_cricket,
                       color: Colors.teal,
-                      size: 30,
+                      size: 30.sp,
                     ),
                   ),
                   title: Text(
                     slot.boxName,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 18.sp,
                     ),
                   ),
                   subtitle: Text(

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, file_names
 
 import 'package:box_booking_project/Auth/3_otp_mobileno_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -72,36 +72,35 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                   ),
                   SizedBox(height: 10.sp),
                   // Dropdown for role selection
-                  DropdownButtonFormField<String>(
-                    value: _selectedRole,
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'user',
-                        child: Text('User'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'admin',
-                        child: Text('Admin'),
-                      ),
-                    ],
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedRole = newValue!;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.sp),
-                        borderSide: const BorderSide(
-                            color: Colors.black), // Black border
-                      ),
-                      labelText: 'Select Role',
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.sp, vertical: 14.sp),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                  ),
+                  // DropdownButtonFormField<String>(
+                  //   value: _selectedRole,
+                  //   items: const [
+                  //     DropdownMenuItem(
+                  //       value: 'user',
+                  //       child: Text('User'),
+                  //     ),
+                  //     DropdownMenuItem(
+                  //       value: 'admin',
+                  //       child: Text('Admin'),
+                  //     ),
+                  //   ],
+                  //   onChanged: (String? newValue) {
+                  //     setState(() {
+                  //       _selectedRole = newValue!;
+                  //     });
+                  //   },
+                  //   decoration: InputDecoration(
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(12.sp),
+                  //       borderSide: const BorderSide(color: Colors.black),
+                  //     ),
+                  //     labelText: 'Select Role',
+                  //     contentPadding: EdgeInsets.symmetric(
+                  //         horizontal: 16.sp, vertical: 14.sp),
+                  //     filled: true,
+                  //     fillColor: Colors.white,
+                  //   ),
+                  // ),
                   SizedBox(height: 20.sp),
 
                   // Submit Button
@@ -173,12 +172,12 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
       });
 
       // Display success message
-      IconSnackBar.show(
-        context,
-        snackBarType: SnackBarType.success,
-        label: 'Account created successfully!',
-        labelTextStyle: TextStyle(fontSize: 15.sp),
-      );
+      // IconSnackBar.show(
+      //   context,
+      //   snackBarType: SnackBarType.success,
+      //   label: 'Account created successfully!',
+      //   labelTextStyle: TextStyle(fontSize: 15.sp),
+      // );
 
       // Navigate to OTP sending screen
       Navigator.pushReplacement(

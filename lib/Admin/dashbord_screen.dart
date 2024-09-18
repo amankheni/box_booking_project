@@ -71,6 +71,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
                   elevation: 5,
+                  color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
@@ -84,7 +85,7 @@ class AdminDashboardScreen extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      '${slot.timeSlot} - ${DateFormat('dd MMM yyyy').format(slot.date)}\nPhone: ${slot.phoneNumber}',
+                      '${slot.timeSlot} \n${DateFormat('dd MMM yyyy').format(slot.date)}\nPhone: ${slot.phoneNumber}',
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 16,

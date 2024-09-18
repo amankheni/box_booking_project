@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:box_booking_project/User/3_TimeSlotSelectionPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +13,7 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _filteredBoxList = [];
+  bool _isSearchActive = false;
 
   @override
   void initState() {
@@ -49,52 +48,110 @@ class _BookingPageState extends State<BookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
         ),
         centerTitle: true,
         title: const Text(
           'Box Booking',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            color: Colors.white,
+          ),
         ),
-        elevation: 3,
+        elevation: 4,
+        backgroundColor: Colors.teal,
       ),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(20.sp),
-            child: Container(
-              height: 50.sp,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10.sp),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2.sp),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: 'Search Box nearby You',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 15.sp),
+            padding: EdgeInsets.all(16.sp),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isSearchActive = true;
+                });
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.sp),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.sp),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _isSearchActive
+                          ? Colors.teal.withOpacity(0.4)
+                          : Colors.grey.withOpacity(0.4),
+                      spreadRadius: 2,
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.search, color: Colors.teal),
+                    SizedBox(width: 8.sp),
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        onTap: () {
+                          setState(() {
+                            _isSearchActive = true;
+                          });
+                        },
+                        onEditingComplete: () {
+                          setState(() {
+                            _isSearchActive = false;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Search Boxes...',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 15.sp),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _searchController.clear();
+                          _filterBoxes();
+                        });
+                      },
+                      icon: const Icon(Icons.clear, color: Colors.teal),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
           Expanded(
             child: _filteredBoxList.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const CircularProgressIndicator(
+                          color: Colors.teal,
+                        ),
+                        SizedBox(height: 16.sp),
+                        Text(
+                          'Loading boxes...',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 : ListView.builder(
                     itemCount: _filteredBoxList.length,
                     itemBuilder: (context, index) {
@@ -111,16 +168,18 @@ class _BookingPageState extends State<BookingPage> {
                           );
                         },
                         child: Card(
+                          color: Colors.white,
                           margin: EdgeInsets.symmetric(
                               horizontal: 16.0.sp, vertical: 8.0.sp),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16.sp),
                           ),
-                          elevation: 3,
+                          elevation: 6,
                           child: ListTile(
+                            contentPadding: EdgeInsets.all(12.sp),
                             leading: box['imageUrl'] != null
                                 ? CircleAvatar(
-                                    radius: 30,
+                                    radius: 35.sp,
                                     backgroundImage:
                                         NetworkImage(box['imageUrl']),
                                   )
@@ -134,16 +193,20 @@ class _BookingPageState extends State<BookingPage> {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18.sp,
+                                color: Colors.black,
                               ),
                             ),
                             subtitle: Text(
                               box['area'],
-                              style: TextStyle(fontSize: 16.sp),
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: Colors.grey[600],
+                              ),
                             ),
                             trailing: Icon(
                               Icons.arrow_forward_ios,
-                              color: Colors.grey,
-                              size: 16.sp,
+                              color: Colors.teal,
+                              size: 20.sp,
                             ),
                           ),
                         ),

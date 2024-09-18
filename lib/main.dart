@@ -31,11 +31,11 @@ class MyApp extends StatelessWidget {
             buttonColor: Colors.teal,
             textTheme: ButtonTextTheme.primary,
           ),
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
             bodyLarge: TextStyle(
-              color: Colors.teal[800],
+              color: Colors.black,
             ),
-            bodyMedium: const TextStyle(color: Colors.black),
+            bodyMedium: TextStyle(color: Colors.black),
           ),
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.teal,
@@ -48,13 +48,15 @@ class MyApp extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.teal),
             ),
-            labelStyle: TextStyle(color: Colors.teal),
+            labelStyle: TextStyle(color: Colors.black),
           ),
           // Customize the cursor color globally
           textSelectionTheme: const TextSelectionThemeData(
             cursorColor: Color.fromARGB(
                 255, 83, 83, 83), // Set the cursor color to black
           ),
+          // Set the default background color for Scaffold
+          scaffoldBackgroundColor: Colors.white,
         ),
         initialRoute: '/',
         routes: {

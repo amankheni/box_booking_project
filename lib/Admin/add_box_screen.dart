@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field, depend_on_referenced_packages, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,8 +30,6 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
   late TextEditingController _heightController;
   late DateTime _startTimeToday;
   late DateTime _endTimeToday;
-  late DateTime _startTimeTomorrow;
-  late DateTime _endTimeTomorrow;
   String? _boxId;
   File? _imageFile;
   String? _imageUrl;
@@ -57,8 +55,6 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
     final now = DateTime.now();
     _startTimeToday = DateTime(now.year, now.month, now.day, now.hour);
     _endTimeToday = DateTime(now.year, now.month, now.day, 23, 59);
-    _startTimeTomorrow = DateTime(now.year, now.month, now.day + 1, now.hour);
-    _endTimeTomorrow = DateTime(now.year, now.month, now.day + 1, 23, 59);
   }
 
   Future<void> _loadBoxDetails() async {
@@ -86,10 +82,7 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
                 DateTime.parse(boxData['timeSlots']['today']['startTime']);
             _endTimeToday =
                 DateTime.parse(boxData['timeSlots']['today']['endTime']);
-            _startTimeTomorrow =
-                DateTime.parse(boxData['timeSlots']['tomorrow']['startTime']);
-            _endTimeTomorrow =
-                DateTime.parse(boxData['timeSlots']['tomorrow']['endTime']);
+
             _imageUrl = boxData['imageUrl'];
             _updateTimeSlots(); // Update the time slots based on the current time
           });
@@ -105,20 +98,20 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
   void _updateTimeSlots() {
     final now = DateTime.now();
 
-    // Update only today’s time slots
+    // Update only today’s time slots if the current time is past the end time
     if (_endTimeToday.isBefore(now)) {
       _startTimeToday = now;
       _endTimeToday = DateTime(now.year, now.month, now.day, 23, 59);
     }
-
-    // Keep tomorrow’s time slots as set by the admin
   }
 
   Future<void> _updateBoxDetails() async {
     User? user = _auth.currentUser;
     if (user != null) {
       try {
-        String? imageUrl = await _uploadImage();
+        // Only upload a new image if one was selected; otherwise, keep the current imageUrl
+        String? imageUrl =
+            _imageFile != null ? await _uploadImage() : _imageUrl;
 
         final boxData = {
           'boxName': _boxNameController.text.trim(),
@@ -132,10 +125,6 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
             'today': {
               'startTime': _startTimeToday.toIso8601String(),
               'endTime': _endTimeToday.toIso8601String(),
-            },
-            'tomorrow': {
-              'startTime': _startTimeTomorrow.toIso8601String(),
-              'endTime': _endTimeTomorrow.toIso8601String(),
             },
           },
           'adminId': user.uid,
@@ -157,6 +146,7 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
           );
         }
 
+        // Clear the form and reset state
         _boxNameController.clear();
         _areaController.clear();
         _priceController.clear();
@@ -202,11 +192,17 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
 
   Future<void> _selectTime(BuildContext context,
       {required bool isStartTime, required bool isToday}) async {
+    final TimeOfDay initialTime = TimeOfDay.fromDateTime(isStartTime
+        ? (isToday
+            ? _startTimeToday
+            : DateTime.now()) // default to now if not today
+        : (isToday
+            ? _endTimeToday
+            : DateTime.now())); // default to now if not today
+
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(isStartTime
-          ? (isToday ? _startTimeToday : _startTimeTomorrow)
-          : (isToday ? _endTimeToday : _endTimeTomorrow)),
+      initialTime: initialTime,
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
@@ -217,43 +213,22 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
 
     if (picked != null) {
       setState(() {
+        DateTime newTime = DateTime(
+          isToday ? _startTimeToday.year : DateTime.now().year,
+          isToday ? _startTimeToday.month : DateTime.now().month,
+          isToday ? _startTimeToday.day : DateTime.now().day,
+          picked.hour,
+          0, // Always set minutes to zero
+        );
+
         if (isStartTime) {
           if (isToday) {
-            _startTimeToday = DateTime(
-              _startTimeToday.year,
-              _startTimeToday.month,
-              _startTimeToday.day,
-              picked.hour,
-              0,
-            );
+            _startTimeToday = newTime;
             _endTimeToday = _startTimeToday.add(const Duration(hours: 1));
-          } else {
-            _startTimeTomorrow = DateTime(
-              _startTimeTomorrow.year,
-              _startTimeTomorrow.month,
-              _startTimeTomorrow.day,
-              picked.hour,
-              0,
-            );
-            _endTimeTomorrow = _startTimeTomorrow.add(const Duration(hours: 1));
           }
         } else {
           if (isToday) {
-            _endTimeToday = DateTime(
-              _endTimeToday.year,
-              _endTimeToday.month,
-              _endTimeToday.day,
-              picked.hour,
-              0,
-            );
-          } else {
-            _endTimeTomorrow = DateTime(
-              _endTimeTomorrow.year,
-              _endTimeTomorrow.month,
-              _endTimeTomorrow.day,
-              picked.hour,
-              0,
-            );
+            _endTimeToday = newTime;
           }
         }
       });
@@ -275,130 +250,126 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add/Edit Box'),
+        title: const Text('Add or Edit Box'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: _updateBoxDetails,
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 10.sp,
+        padding: EdgeInsets.all(16.0.w),
+        child: ListView(
+          children: [
+            Container(
+              height: 200.sp,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[200],
               ),
-              TextField(
-                controller: _boxNameController,
-                decoration: const InputDecoration(labelText: 'Box Name'),
-              ),
-              SizedBox(
-                height: 10.sp,
-              ),
-              TextField(
-                controller: _areaController,
-                decoration: const InputDecoration(labelText: 'Area'),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(
-                height: 10.sp,
-              ),
-              TextField(
-                controller: _priceController,
-                decoration: const InputDecoration(labelText: 'Price per Hour'),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(
-                height: 10.sp,
-              ),
-              TextField(
-                controller: _locationController,
-                decoration: const InputDecoration(labelText: 'Location'),
-              ),
-              SizedBox(
-                height: 10.sp,
-              ),
-              TextField(
-                controller: _lengthController,
-                decoration: const InputDecoration(labelText: 'Length'),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(
-                height: 10.sp,
-              ),
-              TextField(
-                controller: _widthController,
-                decoration: const InputDecoration(labelText: 'Width'),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(
-                height: 10.sp,
-              ),
-              TextField(
-                controller: _heightController,
-                decoration: const InputDecoration(labelText: 'Height'),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                  'Today: ${_timeFormat.format(_startTimeToday)} - ${_timeFormat.format(_endTimeToday)}'),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _selectTime(context,
-                          isStartTime: true, isToday: true),
-                      child: const Text('Select Today Start Time'),
-                    ),
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _selectTime(context,
-                          isStartTime: false, isToday: true),
-                      child: const Text('Select Today End Time'),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                  'Tomorrow: ${_timeFormat.format(_startTimeTomorrow)} - ${_timeFormat.format(_endTimeTomorrow)}'),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _selectTime(context,
-                          isStartTime: true, isToday: false),
-                      child: const Text('Select Tomorrow Start Time'),
-                    ),
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _selectTime(context,
-                          isStartTime: false, isToday: false),
-                      child: const Text('Select Tomorrow End Time'),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: const Text('Pick Image'),
-              ),
-              if (_imageFile != null)
-                Image.file(
-                  _imageFile!,
-                  height: 100,
+              child: _imageFile != null
+                  ? Image.file(
+                      _imageFile!,
+                      fit: BoxFit
+                          .cover, // Adjusts the image to cover the container
+                    )
+                  : _imageUrl != null
+                      ? Image.network(
+                          _imageUrl!,
+                          fit: BoxFit
+                              .cover, // Adjusts the image to cover the container
+                        )
+                      : Container(), // Empty container if no image
+            ),
+            SizedBox(
+              height: 10.sp,
+            ),
+            ElevatedButton(
+              style: const ButtonStyle(),
+              onPressed: _pickImage,
+              child: const Text('Pick Image'),
+            ),
+            SizedBox(
+              height: 13.sp,
+            ),
+            TextField(
+              controller: _boxNameController,
+              decoration: const InputDecoration(labelText: 'Box Name'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _areaController,
+              decoration: const InputDecoration(labelText: 'Area'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _priceController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Price Per Hour'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _locationController,
+              decoration: const InputDecoration(labelText: 'Location'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _lengthController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Length'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _widthController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Width'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _heightController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Height'),
+            ),
+            SizedBox(height: 16.h),
+            Row(
+              children: [
+                const Text('Today\'s Time Slots'),
+                const Spacer(),
+                TextButton(
+                  onPressed: () =>
+                      _selectTime(context, isStartTime: true, isToday: true),
+                  child: Text('Start: ${_timeFormat.format(_startTimeToday)}'),
                 ),
-              const SizedBox(height: 16),
-              ElevatedButton(
+                TextButton(
+                  onPressed: () =>
+                      _selectTime(context, isStartTime: false, isToday: true),
+                  child: Text('End: ${_timeFormat.format(_endTimeToday)}'),
+                ),
+              ],
+            ),
+            ElevatedButton(
                 onPressed: _updateBoxDetails,
-                child: const Text('Save Box Details'),
-              ),
-            ],
-          ),
+                child: const Text(
+                  'Update Box',
+                ))
+          ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _boxNameController.dispose();
+    _areaController.dispose();
+    _priceController.dispose();
+    _locationController.dispose();
+    _lengthController.dispose();
+    _widthController.dispose();
+    _heightController.dispose();
+    super.dispose();
   }
 }

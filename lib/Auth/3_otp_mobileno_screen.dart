@@ -22,7 +22,7 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal[50],
+      backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Center(
           child: Padding(

@@ -56,7 +56,7 @@ class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.grey[100], // Light background color
+      backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Center(
           child: Padding(

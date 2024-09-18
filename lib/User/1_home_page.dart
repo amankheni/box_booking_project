@@ -70,41 +70,15 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
       child: Scaffold(
         backgroundColor: Colors.white,
         drawer: Drawer(
-          width: 300.sp,
+          width: 270.sp,
           backgroundColor: Colors.white,
           child: Column(
             children: [
-              Container(
-                padding: EdgeInsets.only(top: 50.sp, left: 16.sp, right: 16.sp),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.teal.shade100, Colors.teal.shade300],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(),
-                          ),
-                        );
-                      },
-                      child: CircleAvatar(
-                        radius: 50.sp,
-                        backgroundImage: const AssetImage(
-                            'assets/image/cricket-player- avetar.jpg'),
-                        backgroundColor: Colors.transparent,
-                      ),
-                    ),
-                    SizedBox(height: 10.sp),
-                    SizedBox(height: 20.sp),
-                  ],
-                ),
+              Image(
+                height: 220.sp,
+                //  width: 220.sp,
+                image:
+                    const AssetImage('assets/image/Book My Box App Logo.png'),
               ),
               Divider(height: 1.sp, color: Colors.grey),
               SizedBox(height: 10.sp),
@@ -125,6 +99,18 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const BoxBookInfoScreen(),
+                      ));
+                },
+              ),
+              _buildMenuItem(
+                context,
+                icon: Icons.person_2_outlined,
+                text: 'Profile',
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfileScreen(),
                       ));
                 },
               ),
@@ -202,12 +188,13 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                             onPressed: () async {
                               await FirebaseAuth.instance.signOut();
                               if (mounted) {
-                                Navigator.pushReplacement(
+                                Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        SingInScreen1(), // Replace with your actual screen
+                                    builder: (context) => SingInScreen1(),
                                   ),
+                                  (Route<dynamic> route) =>
+                                      false, // Removes all previous routes
                                 );
                               }
                             },
@@ -218,7 +205,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                                 fontSize: 16.sp,
                               ),
                             ),
-                          ),
+                          )
                         ],
                       );
                     },
@@ -229,34 +216,58 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
           ),
         ),
         key: scaffoldKey,
+        appBar: AppBar(
+          leading: GestureDetector(
+            onTap: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+            child: Icon(
+              Icons.menu_open_rounded,
+              color: const Color.fromARGB(255, 13, 124, 120),
+              size: 30.sp,
+            ),
+          ),
+          title: Text(
+            'Book My Box',
+            style: TextStyle(
+                fontSize: 23.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black),
+          ),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
+                  ),
+                );
+              },
+              child: CircleAvatar(
+                radius: 18.sp,
+                backgroundImage:
+                    const AssetImage('assets/image/cricket-player- avetar.jpg'),
+                backgroundColor: Colors.transparent,
+              ),
+            ),
+            SizedBox(
+              width: 10.sp,
+            )
+          ],
+          backgroundColor: Colors.white,
+          shadowColor: Colors.black,
+          elevation: 5,
+        ),
         body: Padding(
-          padding: EdgeInsets.all(16.sp),
+          padding: EdgeInsets.only(
+            top: 16.sp,
+            left: 10.sp,
+            right: 10.sp,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      scaffoldKey.currentState?.openDrawer();
-                    },
-                    child: Icon(
-                      Icons.menu_open_rounded,
-                      color: const Color.fromARGB(255, 13, 124, 120),
-                      size: 30.sp,
-                    ),
-                  ),
-                  SizedBox(width: 13.sp),
-                  Text(
-                    'Book My Box',
-                    style:
-                        TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              SizedBox(height: 7.sp),
-              Divider(thickness: 2.sp),
-              SizedBox(height: 7.sp),
               Container(
                 height: 190.sp,
                 width: double.infinity,
@@ -309,6 +320,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                           return Card(
                             margin: EdgeInsets.symmetric(vertical: 8.0.sp),
                             elevation: 5,
+                            color: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
@@ -344,12 +356,13 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
             ],
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(24.sp),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(left: 20.sp, right: 20.sp, bottom: 15.sp),
           child: MaterialButton(
+            height: 40.sp,
+            elevation: 10,
             color: const Color.fromARGB(255, 45, 167, 162),
-            colorBrightness: Brightness.light,
-            focusElevation: 2.sp,
             onPressed: () {
               Navigator.push(
                 context,
@@ -359,12 +372,12 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
               );
             },
             child: Padding(
-              padding: EdgeInsets.only(left: 70.sp, right: 70.sp),
+              padding: EdgeInsets.symmetric(horizontal: 70.sp),
               child: Text(
                 'Book now',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16.sp,
+                  fontSize: 20.sp,
                 ),
               ),
             ),

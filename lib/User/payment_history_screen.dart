@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class PaymentHistoryScreen extends StatelessWidget {
@@ -18,12 +19,14 @@ class PaymentHistoryScreen extends StatelessWidget {
           'Payment History',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.tealAccent,
+        backgroundColor: Colors.teal,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -48,7 +51,7 @@ class PaymentHistoryScreen extends StatelessWidget {
 
           return ListView.builder(
             itemCount: bookings.length,
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0.sp),
             itemBuilder: (context, index) {
               final booking = bookings[index];
               final boxName = booking['boxName'];
@@ -59,13 +62,14 @@ class PaymentHistoryScreen extends StatelessWidget {
               final paymentId = booking['paymentId'];
 
               return Card(
-                margin: const EdgeInsets.symmetric(vertical: 10.0),
+                margin: EdgeInsets.symmetric(vertical: 10.0.sp),
                 elevation: 5,
+                color: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0.sp),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -74,19 +78,19 @@ class PaymentHistoryScreen extends StatelessWidget {
                           Icon(
                             Icons.sports_cricket,
                             color: Colors.teal[300],
-                            size: 30,
+                            size: 30.sp,
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.sp),
                           Text(
                             boxName,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                              fontSize: 20.sp,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10.sp),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -94,19 +98,19 @@ class PaymentHistoryScreen extends StatelessWidget {
                             'Time Slot:',
                             style: TextStyle(
                               color: Colors.grey[700],
-                              fontSize: 16,
+                              fontSize: 16.sp,
                             ),
                           ),
                           Text(
                             timeSlot,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 5),
+                      SizedBox(height: 5.sp),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -114,19 +118,19 @@ class PaymentHistoryScreen extends StatelessWidget {
                             'Date:',
                             style: TextStyle(
                               color: Colors.grey[700],
-                              fontSize: 16,
+                              fontSize: 16.sp,
                             ),
                           ),
                           Text(
                             date,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 5),
+                      SizedBox(height: 5.sp),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -134,19 +138,19 @@ class PaymentHistoryScreen extends StatelessWidget {
                             'Total Cost:',
                             style: TextStyle(
                               color: Colors.grey[700],
-                              fontSize: 16,
+                              fontSize: 16.sp,
                             ),
                           ),
                           Text(
                             '₹${totalCost.toStringAsFixed(2)}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 5),
+                      SizedBox(height: 5.sp),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -154,15 +158,15 @@ class PaymentHistoryScreen extends StatelessWidget {
                             'Payment ID:',
                             style: TextStyle(
                               color: Colors.grey[700],
-                              fontSize: 16,
+                              fontSize: 16.sp,
                             ),
                           ),
                           Expanded(
                             child: Text(
                               paymentId,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                fontSize: 16,
+                                fontSize: 16.sp,
                               ),
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.end,

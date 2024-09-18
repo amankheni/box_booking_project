@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -175,9 +177,14 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                         widget.boxName,
                                         style: const TextStyle(fontSize: 16),
                                       ),
-                                      const Icon(
-                                        Icons.cancel_outlined,
-                                        color: Colors.red,
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Icon(
+                                          Icons.cancel_outlined,
+                                          color: Colors.red,
+                                        ),
                                       ),
                                     ],
                                   ),

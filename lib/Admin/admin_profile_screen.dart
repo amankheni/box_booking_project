@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,7 +18,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   late TextEditingController _lastNameController;
   late TextEditingController _phoneNumberController;
   late TextEditingController _emailController;
-  //String? _email;
 
   Future<void> _fetchAdminDetails() async {
     User? user = _auth.currentUser;
@@ -34,7 +31,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         _lastNameController.text = data['lastName'] ?? '';
         _phoneNumberController.text = data['phoneNumber'] ?? '';
         _emailController.text = data['email'] ?? '';
-        // _email = user.email; // Get email from FirebaseAuth
       }
     }
   }
@@ -49,11 +45,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
           'phoneNumber': _phoneNumberController.text.trim(),
           'email': _emailController.text.trim(),
         });
-
-        // Update email if needed
-        // if (_email != user.email) {
-        //   await user.updateEmail(_email!);
-        // }
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile updated successfully')),
@@ -73,7 +64,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
     _lastNameController = TextEditingController();
     _phoneNumberController = TextEditingController();
     _emailController = TextEditingController();
-    _fetchAdminDetails(); // Fetch the initial data
+    _fetchAdminDetails();
   }
 
   @override
@@ -103,7 +94,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
           ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,39 +105,59 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'First Name',
+                prefixIcon: Icon(Icons.person),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             TextField(
               controller: _lastNameController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Last Name',
+                prefixIcon: Icon(Icons.person),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             TextField(
               controller: _phoneNumberController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Phone Number',
+                prefixIcon: Icon(Icons.phone),
                 enabled: false,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Email',
+                prefixIcon: Icon(Icons.email),
                 enabled: false,
-                //  hintText: 'emao',
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _updateAdminDetails,
-              child: const Text('Save Changes'),
+            Center(
+              child: ElevatedButton(
+                onPressed: _updateAdminDetails,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal, // Background color
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(12), // Button border radius
+                  ),
+                ),
+                child: const Text(
+                  'Save Changes',
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
           ],
         ),

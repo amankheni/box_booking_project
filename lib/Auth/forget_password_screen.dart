@@ -50,8 +50,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       'Enter your email to reset password',
                       style: GoogleFonts.montserrat(
                         fontSize: 18,
-                        color:
-                            Colors.teal[600], // Slightly lighter than the title
+                        color: Colors.teal[600],
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -59,6 +58,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     // Form card
                     Card(
                       elevation: 8,
+                      color: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
