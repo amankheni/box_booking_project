@@ -20,7 +20,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String _selectedRole = 'user'; // Default role
+  final String _selectedRole = 'user'; // Default role
 
   @override
   Widget build(BuildContext context) {

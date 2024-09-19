@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:box_booking_project/User/4_booking_summry_page.dart';
+import 'package:box_booking_project/Users/4_booking_summry_page.dart';
 
 class TimeSlotSelectionPage extends StatefulWidget {
   final String boxName;
@@ -33,156 +33,6 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
   void initState() {
     super.initState();
     _fetchAndGenerateTimeSlots();
-  }
-
-  Future<void> _fetchAndGenerateTimeSlots() async {
-    try {
-      final boxQuery = await _firestore
-          .collection('boxes')
-          .where('boxName', isEqualTo: widget.boxName)
-          .limit(1)
-          .get();
-
-      if (boxQuery.docs.isNotEmpty) {
-        final boxData = boxQuery.docs.first.data();
-
-        // Check if timeSlots exist and are valid maps
-        final todaySlot =
-            boxData['timeSlots']?['today'] as Map<String, dynamic>?;
-
-        if (todaySlot != null) {
-          List<Map<String, dynamic>> todayGeneratedSlots =
-              _generateHourlySlots(todaySlot);
-
-          // Fetch additional box details
-          setState(() {
-            _todaySlots = todayGeneratedSlots;
-            _boxImageUrl = boxData['imageUrl'];
-            _boxLocation = boxData['location'];
-            _boxLength = (boxData['length'] as num?)?.toDouble();
-            _boxWidth = (boxData['width'] as num?)?.toDouble();
-            _boxHeight = (boxData['height'] as num?)?.toDouble();
-            _pricePerHour = (boxData['pricePerHour'] as num?)?.toDouble();
-          });
-
-          // Fetch admin details from 'users' collection
-          if (boxData['adminId'] != null) {
-            await _fetchAdminDetails(boxData['adminId']);
-          }
-
-          // Fetch booked slots
-          await _fetchBookedSlots();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content:
-                    Text('No valid time slots found for ${widget.boxName}')),
-          );
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No box data found for ${widget.boxName}')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching time slots: $e')),
-      );
-    }
-  }
-
-  List<Map<String, dynamic>> _generateHourlySlots(
-      Map<String, dynamic> slotData) {
-    List<Map<String, dynamic>> generatedSlots = [];
-    if (slotData['startTime'] != null && slotData['endTime'] != null) {
-      DateTime startTime = DateTime.parse(slotData['startTime']);
-      DateTime endTime = DateTime.parse(slotData['endTime']);
-
-      // Ensure startTime is not in the past
-      DateTime now = DateTime.now();
-      if (startTime.isBefore(now)) {
-        // Round up to the next hour
-        startTime = DateTime(now.year, now.month, now.day, now.hour + 1);
-        if (startTime.isAfter(endTime)) {
-          // No available slots for today
-          return generatedSlots;
-        }
-      }
-
-      while (startTime.isBefore(endTime)) {
-        final nextTime = startTime.add(const Duration(hours: 1));
-        if (nextTime.isAfter(endTime)) break;
-
-        generatedSlots.add({
-          'startTime': startTime,
-          'endTime': nextTime,
-        });
-        startTime = nextTime;
-      }
-    }
-    return generatedSlots;
-  }
-
-  Future<void> _fetchAdminDetails(String adminId) async {
-    try {
-      final adminQuery =
-          await _firestore.collection('users').doc(adminId).get();
-      if (adminQuery.exists) {
-        final adminData = adminQuery.data() as Map<String, dynamic>;
-        setState(() {
-          _adminFirstName = adminData['firstName'] ?? '';
-          _adminLastName = adminData['lastName'] ?? '';
-        });
-      }
-    } catch (e) {
-      print('Error fetching admin details: $e');
-      // Optionally, show a SnackBar or other UI feedback
-    }
-  }
-
-  // Update in _fetchBookedSlots function to store booked slots properly
-  Future<void> _fetchBookedSlots() async {
-    try {
-      final bookingsQuery = await _firestore
-          .collection('bookings')
-          .where('boxName', isEqualTo: widget.boxName)
-          .where('date',
-              isEqualTo: DateFormat('yyyy-MM-dd')
-                  .format(_selectedDate)) // Match the date format
-          .get();
-
-      final bookedSlots = bookingsQuery.docs.map((doc) {
-        final data = doc.data();
-        final startTime = DateTime.parse(data['startTime']);
-        final endTime = DateTime.parse(data['endTime']);
-
-        // Store booked slot as a string
-        return '${startTime.toIso8601String()} - ${endTime.toIso8601String()}';
-      }).toSet();
-
-      setState(() {
-        _bookedSlots = bookedSlots;
-      });
-    } catch (e) {
-      print('Error fetching booked slots: $e');
-    }
-  }
-
-  void _selectTimeSlot(DateTime startTime, DateTime endTime) {
-    final DateFormat timeFormatter = DateFormat('hh:mm a');
-    final String formattedTimeSlot =
-        '${timeFormatter.format(startTime)} - ${timeFormatter.format(endTime)}';
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BookingSummaryPage(
-          boxName: widget.boxName,
-          timeSlot: formattedTimeSlot,
-          date: _selectedDate, // Pass the DateTime object directly
-        ),
-      ),
-    );
   }
 
   @override
@@ -339,6 +189,156 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
               ],
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _fetchAndGenerateTimeSlots() async {
+    try {
+      final boxQuery = await _firestore
+          .collection('boxes')
+          .where('boxName', isEqualTo: widget.boxName)
+          .limit(1)
+          .get();
+
+      if (boxQuery.docs.isNotEmpty) {
+        final boxData = boxQuery.docs.first.data();
+
+        // Check if timeSlots exist and are valid maps
+        final todaySlot =
+            boxData['timeSlots']?['today'] as Map<String, dynamic>?;
+
+        if (todaySlot != null) {
+          List<Map<String, dynamic>> todayGeneratedSlots =
+              _generateHourlySlots(todaySlot);
+
+          // Fetch additional box details
+          setState(() {
+            _todaySlots = todayGeneratedSlots;
+            _boxImageUrl = boxData['imageUrl'];
+            _boxLocation = boxData['location'];
+            _boxLength = (boxData['length'] as num?)?.toDouble();
+            _boxWidth = (boxData['width'] as num?)?.toDouble();
+            _boxHeight = (boxData['height'] as num?)?.toDouble();
+            _pricePerHour = (boxData['pricePerHour'] as num?)?.toDouble();
+          });
+
+          // Fetch admin details from 'users' collection
+          if (boxData['adminId'] != null) {
+            await _fetchAdminDetails(boxData['adminId']);
+          }
+
+          // Fetch booked slots
+          await _fetchBookedSlots();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text('No valid time slots found for ${widget.boxName}')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No box data found for ${widget.boxName}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching time slots: $e')),
+      );
+    }
+  }
+
+  List<Map<String, dynamic>> _generateHourlySlots(
+      Map<String, dynamic> slotData) {
+    List<Map<String, dynamic>> generatedSlots = [];
+    if (slotData['startTime'] != null && slotData['endTime'] != null) {
+      DateTime startTime = DateTime.parse(slotData['startTime']);
+      DateTime endTime = DateTime.parse(slotData['endTime']);
+
+      // Ensure startTime is not in the past
+      DateTime now = DateTime.now();
+      if (startTime.isBefore(now)) {
+        // Round up to the next hour
+        startTime = DateTime(now.year, now.month, now.day, now.hour + 1);
+        if (startTime.isAfter(endTime)) {
+          // No available slots for today
+          return generatedSlots;
+        }
+      }
+
+      while (startTime.isBefore(endTime)) {
+        final nextTime = startTime.add(const Duration(hours: 1));
+        if (nextTime.isAfter(endTime)) break;
+
+        generatedSlots.add({
+          'startTime': startTime,
+          'endTime': nextTime,
+        });
+        startTime = nextTime;
+      }
+    }
+    return generatedSlots;
+  }
+
+  Future<void> _fetchAdminDetails(String adminId) async {
+    try {
+      final adminQuery =
+          await _firestore.collection('users').doc(adminId).get();
+      if (adminQuery.exists) {
+        final adminData = adminQuery.data() as Map<String, dynamic>;
+        setState(() {
+          _adminFirstName = adminData['firstName'] ?? '';
+          _adminLastName = adminData['lastName'] ?? '';
+        });
+      }
+    } catch (e) {
+      print('Error fetching admin details: $e');
+      // Optionally, show a SnackBar or other UI feedback
+    }
+  }
+
+  // Update in _fetchBookedSlots function to store booked slots properly
+  Future<void> _fetchBookedSlots() async {
+    try {
+      final bookingsQuery = await _firestore
+          .collection('bookings')
+          .where('boxName', isEqualTo: widget.boxName)
+          .where('date',
+              isEqualTo: DateFormat('yyyy-MM-dd')
+                  .format(_selectedDate)) // Match the date format
+          .get();
+
+      final bookedSlots = bookingsQuery.docs.map((doc) {
+        final data = doc.data();
+        final startTime = DateTime.parse(data['startTime']);
+        final endTime = DateTime.parse(data['endTime']);
+
+        // Store booked slot as a string
+        return '${startTime.toIso8601String()} - ${endTime.toIso8601String()}';
+      }).toSet();
+
+      setState(() {
+        _bookedSlots = bookedSlots;
+      });
+    } catch (e) {
+      print('Error fetching booked slots: $e');
+    }
+  }
+
+  void _selectTimeSlot(DateTime startTime, DateTime endTime) {
+    final DateFormat timeFormatter = DateFormat('hh:mm a');
+    final String formattedTimeSlot =
+        '${timeFormatter.format(startTime)} - ${timeFormatter.format(endTime)}';
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookingSummaryPage(
+          boxName: widget.boxName,
+          timeSlot: formattedTimeSlot,
+          date: _selectedDate, // Pass the DateTime object directly
         ),
       ),
     );

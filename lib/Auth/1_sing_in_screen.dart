@@ -4,7 +4,7 @@ import 'package:box_booking_project/Auth/forget_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:box_booking_project/User/1_home_page.dart';
+import 'package:box_booking_project/Users/1_home_page.dart';
 import 'package:box_booking_project/Auth/2_sign_up_screen.dart';
 import 'package:box_booking_project/Admin/admin_Screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -1,5 +1,5 @@
 import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
-import 'package:box_booking_project/User/1_home_page.dart';
+import 'package:box_booking_project/Users/1_home_page.dart';
 import 'package:box_booking_project/Admin/admin_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

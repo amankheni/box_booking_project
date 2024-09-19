@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,44 +20,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   late TextEditingController _lastNameController;
   late TextEditingController _phoneNumberController;
   late TextEditingController _emailController;
-
-  Future<void> _fetchAdminDetails() async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      DocumentSnapshot doc =
-          await _firestore.collection('users').doc(user.uid).get();
-      var data = doc.data() as Map<String, dynamic>?;
-
-      if (data != null) {
-        _firstNameController.text = data['firstName'] ?? '';
-        _lastNameController.text = data['lastName'] ?? '';
-        _phoneNumberController.text = data['phoneNumber'] ?? '';
-        _emailController.text = data['email'] ?? '';
-      }
-    }
-  }
-
-  Future<void> _updateAdminDetails() async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      try {
-        await _firestore.collection('users').doc(user.uid).update({
-          'firstName': _firstNameController.text.trim(),
-          'lastName': _lastNameController.text.trim(),
-          'phoneNumber': _phoneNumberController.text.trim(),
-          'email': _emailController.text.trim(),
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully')),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating profile: $e')),
-        );
-      }
-    }
-  }
 
   @override
   void initState() {
@@ -163,5 +127,43 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _fetchAdminDetails() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentSnapshot doc =
+          await _firestore.collection('users').doc(user.uid).get();
+      var data = doc.data() as Map<String, dynamic>?;
+
+      if (data != null) {
+        _firstNameController.text = data['firstName'] ?? '';
+        _lastNameController.text = data['lastName'] ?? '';
+        _phoneNumberController.text = data['phoneNumber'] ?? '';
+        _emailController.text = data['email'] ?? '';
+      }
+    }
+  }
+
+  Future<void> _updateAdminDetails() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        await _firestore.collection('users').doc(user.uid).update({
+          'firstName': _firstNameController.text.trim(),
+          'lastName': _lastNameController.text.trim(),
+          'phoneNumber': _phoneNumberController.text.trim(),
+          'email': _emailController.text.trim(),
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile updated successfully')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating profile: $e')),
+        );
+      }
+    }
   }
 }

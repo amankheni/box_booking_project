@@ -51,6 +51,133 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
     _loadBoxDetails();
   }
 
+  @override
+  void dispose() {
+    _boxNameController.dispose();
+    _areaController.dispose();
+    _priceController.dispose();
+    _locationController.dispose();
+    _lengthController.dispose();
+    _widthController.dispose();
+    _heightController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Add or Edit Box'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: _updateBoxDetails,
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0.w),
+        child: ListView(
+          children: [
+            Container(
+              height: 200.sp,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[200],
+              ),
+              child: _imageFile != null
+                  ? Image.file(
+                      _imageFile!,
+                      fit: BoxFit
+                          .cover, // Adjusts the image to cover the container
+                    )
+                  : _imageUrl != null
+                      ? Image.network(
+                          _imageUrl!,
+                          fit: BoxFit
+                              .cover, // Adjusts the image to cover the container
+                        )
+                      : Container(), // Empty container if no image
+            ),
+            SizedBox(
+              height: 10.sp,
+            ),
+            ElevatedButton(
+              style: const ButtonStyle(),
+              onPressed: _pickImage,
+              child: const Text('Pick Image'),
+            ),
+            SizedBox(
+              height: 13.sp,
+            ),
+            TextField(
+              controller: _boxNameController,
+              decoration: const InputDecoration(labelText: 'Box Name'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _areaController,
+              decoration: const InputDecoration(labelText: 'Area'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _priceController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Price Per Hour'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _locationController,
+              decoration: const InputDecoration(labelText: 'Location'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _lengthController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Length'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _widthController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Width'),
+            ),
+            SizedBox(height: 8.h),
+            TextField(
+              controller: _heightController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Height'),
+            ),
+            SizedBox(height: 16.h),
+            Row(
+              children: [
+                const Text('Today\'s Time Slots'),
+                const Spacer(),
+                TextButton(
+                  onPressed: () =>
+                      _selectTime(context, isStartTime: true, isToday: true),
+                  child: Text('Start: ${_timeFormat.format(_startTimeToday)}'),
+                ),
+                TextButton(
+                  onPressed: () =>
+                      _selectTime(context, isStartTime: false, isToday: true),
+                  child: Text('End: ${_timeFormat.format(_endTimeToday)}'),
+                ),
+              ],
+            ),
+            ElevatedButton(
+                onPressed: _updateBoxDetails,
+                child: const Text(
+                  'Update Box',
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+
   void _initializeTimeSlots() {
     final now = DateTime.now();
     _startTimeToday = DateTime(now.year, now.month, now.day, now.hour);
@@ -244,132 +371,5 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
         _imageFile = File(pickedFile.path);
       });
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add or Edit Box'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _updateBoxDetails,
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0.w),
-        child: ListView(
-          children: [
-            Container(
-              height: 200.sp,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[200],
-              ),
-              child: _imageFile != null
-                  ? Image.file(
-                      _imageFile!,
-                      fit: BoxFit
-                          .cover, // Adjusts the image to cover the container
-                    )
-                  : _imageUrl != null
-                      ? Image.network(
-                          _imageUrl!,
-                          fit: BoxFit
-                              .cover, // Adjusts the image to cover the container
-                        )
-                      : Container(), // Empty container if no image
-            ),
-            SizedBox(
-              height: 10.sp,
-            ),
-            ElevatedButton(
-              style: const ButtonStyle(),
-              onPressed: _pickImage,
-              child: const Text('Pick Image'),
-            ),
-            SizedBox(
-              height: 13.sp,
-            ),
-            TextField(
-              controller: _boxNameController,
-              decoration: const InputDecoration(labelText: 'Box Name'),
-            ),
-            SizedBox(height: 8.h),
-            TextField(
-              controller: _areaController,
-              decoration: const InputDecoration(labelText: 'Area'),
-            ),
-            SizedBox(height: 8.h),
-            TextField(
-              controller: _priceController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Price Per Hour'),
-            ),
-            SizedBox(height: 8.h),
-            TextField(
-              controller: _locationController,
-              decoration: const InputDecoration(labelText: 'Location'),
-            ),
-            SizedBox(height: 8.h),
-            TextField(
-              controller: _lengthController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Length'),
-            ),
-            SizedBox(height: 8.h),
-            TextField(
-              controller: _widthController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Width'),
-            ),
-            SizedBox(height: 8.h),
-            TextField(
-              controller: _heightController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Height'),
-            ),
-            SizedBox(height: 16.h),
-            Row(
-              children: [
-                const Text('Today\'s Time Slots'),
-                const Spacer(),
-                TextButton(
-                  onPressed: () =>
-                      _selectTime(context, isStartTime: true, isToday: true),
-                  child: Text('Start: ${_timeFormat.format(_startTimeToday)}'),
-                ),
-                TextButton(
-                  onPressed: () =>
-                      _selectTime(context, isStartTime: false, isToday: true),
-                  child: Text('End: ${_timeFormat.format(_endTimeToday)}'),
-                ),
-              ],
-            ),
-            ElevatedButton(
-                onPressed: _updateBoxDetails,
-                child: const Text(
-                  'Update Box',
-                ))
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _boxNameController.dispose();
-    _areaController.dispose();
-    _priceController.dispose();
-    _locationController.dispose();
-    _lengthController.dispose();
-    _widthController.dispose();
-    _heightController.dispose();
-    super.dispose();
   }
 }

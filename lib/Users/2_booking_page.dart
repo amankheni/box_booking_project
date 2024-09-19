@@ -1,5 +1,7 @@
-import 'package:box_booking_project/User/3_TimeSlotSelectionPage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore_for_file: file_names
+
+import 'package:box_booking_project/Controller/booking_controller.dart';
+import 'package:box_booking_project/Users/3_TimeSlotSelectionPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -20,23 +22,6 @@ class _BookingPageState extends State<BookingPage> {
     super.initState();
     _loadBoxDetails();
     _searchController.addListener(_filterBoxes);
-  }
-
-  Future<void> _loadBoxDetails() async {
-    await BookingController.fetchBoxDetails();
-    _filteredBoxList = BookingController.boxList;
-    setState(() {});
-  }
-
-  void _filterBoxes() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredBoxList = BookingController.boxList.where((box) {
-        final boxName = box['boxName'].toLowerCase();
-        final area = box['area'].toLowerCase();
-        return boxName.contains(query) || area.contains(query);
-      }).toList();
-    });
   }
 
   @override
@@ -218,20 +203,21 @@ class _BookingPageState extends State<BookingPage> {
       ),
     );
   }
-}
 
-class BookingController {
-  static List<Map<String, dynamic>> boxList = [];
+  Future<void> _loadBoxDetails() async {
+    await BookingController.fetchBoxDetails();
+    _filteredBoxList = BookingController.boxList;
+    setState(() {});
+  }
 
-  static Future<void> fetchBoxDetails() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot snapshot = await firestore.collection('boxes').get();
-    boxList = snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      return {
-        'id': doc.id,
-        ...data,
-      };
-    }).toList();
+  void _filterBoxes() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredBoxList = BookingController.boxList.where((box) {
+        final boxName = box['boxName'].toLowerCase();
+        final area = box['area'].toLowerCase();
+        return boxName.contains(query) || area.contains(query);
+      }).toList();
+    });
   }
 }

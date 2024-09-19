@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-import 'package:box_booking_project/User/1_home_page.dart';
+import 'package:box_booking_project/Users/1_home_page.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String boxName;
@@ -65,111 +65,6 @@ class _PaymentScreenState extends State<PaymentScreen>
     _timer?.cancel(); // Cancel the timer
     _controller.dispose(); // Dispose the animation controller
     super.dispose();
-  }
-
-  void startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_start == 0) {
-        setState(() {
-          timer.cancel();
-          _showTimeoutDialog(); // Show timeout dialog or navigate back
-        });
-      } else {
-        setState(() {
-          _start--;
-        });
-      }
-    });
-  }
-
-  void _showTimeoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: const Text('Session Timeout'),
-          content: const Text('Your session has timed out. Please try again.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomePageScreen5(),
-                  ),
-                );
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    // Show a toast for feedback
-    Fluttertoast.showToast(msg: 'Payment Successful');
-
-    // Fetch the user ID
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    // Fetch the user details from the 'users' collection
-    final userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    final userData = userDoc.data();
-
-    final username = userData?['firstName'] ?? 'Unknown User';
-    final phoneNumber = userData?['phoneNumber'] ?? 'N/A';
-
-    // Save booking details including payment ID to Firestore
-    await FirebaseFirestore.instance.collection('bookings').add({
-      'boxName': widget.boxName,
-      'timeSlot': widget.timeSlot,
-      'date': widget.date.toIso8601String(),
-      'userId': userId,
-      'username': username,
-      'phoneNumber': phoneNumber,
-      'totalCost': widget.totalCost,
-      'paymentId': response.paymentId, // Store the payment ID
-    });
-
-    // Show the payment success dialog
-    _showPaymentSuccessDialog();
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    Fluttertoast.showToast(msg: 'Payment Failed');
-  }
-
-  void _showPaymentSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: const Text('Payment Successful'),
-          content: const Text('Your payment was processed successfully.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                // Navigate to HomePage or another screen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomePageScreen5(),
-                  ),
-                );
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -359,6 +254,111 @@ class _PaymentScreenState extends State<PaymentScreen>
           ),
         ),
       ),
+    );
+  }
+
+  void startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_start == 0) {
+        setState(() {
+          timer.cancel();
+          _showTimeoutDialog(); // Show timeout dialog or navigate back
+        });
+      } else {
+        setState(() {
+          _start--;
+        });
+      }
+    });
+  }
+
+  void _showTimeoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Session Timeout'),
+          content: const Text('Your session has timed out. Please try again.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePageScreen5(),
+                  ),
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    // Show a toast for feedback
+    Fluttertoast.showToast(msg: 'Payment Successful');
+
+    // Fetch the user ID
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    // Fetch the user details from the 'users' collection
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final userData = userDoc.data();
+
+    final username = userData?['firstName'] ?? 'Unknown User';
+    final phoneNumber = userData?['phoneNumber'] ?? 'N/A';
+
+    // Save booking details including payment ID to Firestore
+    await FirebaseFirestore.instance.collection('bookings').add({
+      'boxName': widget.boxName,
+      'timeSlot': widget.timeSlot,
+      'date': widget.date.toIso8601String(),
+      'userId': userId,
+      'username': username,
+      'phoneNumber': phoneNumber,
+      'totalCost': widget.totalCost,
+      'paymentId': response.paymentId, // Store the payment ID
+    });
+
+    // Show the payment success dialog
+    _showPaymentSuccessDialog();
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(msg: 'Payment Failed');
+  }
+
+  void _showPaymentSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Payment Successful'),
+          content: const Text('Your payment was processed successfully.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                // Navigate to HomePage or another screen
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePageScreen5(),
+                  ),
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

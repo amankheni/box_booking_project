@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, depend_on_referenced_packages, file_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -29,44 +29,6 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
   void initState() {
     super.initState();
     _fetchBoxPrice();
-  }
-
-  Future<void> _fetchBoxPrice() async {
-    try {
-      // Fetch box details based on boxName
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('boxes')
-          .where('boxName', isEqualTo: widget.boxName)
-          .limit(1)
-          .get();
-
-      if (snapshot.docs.isNotEmpty) {
-        DocumentSnapshot doc = snapshot.docs.first;
-        var data = doc.data() as Map<String, dynamic>?;
-
-        if (data != null) {
-          setState(() {
-            _pricePerHour = (data['pricePerHour'] ?? 0.0).toDouble();
-            _isLoading = false;
-          });
-        } else {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      } else {
-        // Handle the case where no document was found
-        setState(() {
-          _isLoading = false;
-        });
-        print('No box found with the given name.');
-      }
-    } catch (e) {
-      print('Error fetching box price: $e');
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
@@ -316,5 +278,43 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
         ),
       ],
     );
+  }
+
+  Future<void> _fetchBoxPrice() async {
+    try {
+      // Fetch box details based on boxName
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('boxes')
+          .where('boxName', isEqualTo: widget.boxName)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        DocumentSnapshot doc = snapshot.docs.first;
+        var data = doc.data() as Map<String, dynamic>?;
+
+        if (data != null) {
+          setState(() {
+            _pricePerHour = (data['pricePerHour'] ?? 0.0).toDouble();
+            _isLoading = false;
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      } else {
+        // Handle the case where no document was found
+        setState(() {
+          _isLoading = false;
+        });
+        print('No box found with the given name.');
+      }
+    } catch (e) {
+      print('Error fetching box price: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }
