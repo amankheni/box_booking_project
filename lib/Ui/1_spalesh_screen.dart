@@ -1,8 +1,9 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
+// ignore_for_file: use_build_context_synchronously, avoid_print, file_names
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -81,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
           Positioned(
-            bottom: 30,
+            bottom: 30.sp,
             left: 0,
             right: 0,
             child: Center(
@@ -99,8 +100,8 @@ class _SplashScreenState extends State<SplashScreen>
                         scale: scale,
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 5),
-                          width: 7,
-                          height: 7,
+                          width: 7.sp,
+                          height: 7.sp,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: index == (_controller.value * 3).floor()

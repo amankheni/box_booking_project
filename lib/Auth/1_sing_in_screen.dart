@@ -117,151 +117,163 @@ class _SingInScreen1State extends State<SingInScreen1> {
         backgroundColor: Colors.grey[100],
         body: Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.sp),
+            padding: EdgeInsets.symmetric(
+                horizontal: 24.w), // Updated for screenutil
             child: Form(
               key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Welcome Back!',
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                        fontSize: 32.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal[800],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.sp),
-                  Text(
-                    'Login to your account',
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                        fontSize: 16.sp,
-                        color: Colors.teal[600],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 40.sp),
-                  TextFormField(
-                    controller: _emailController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Email cannot be empty";
-                      }
-                      if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                        return "Please enter a valid email address";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email, color: Colors.teal[600]),
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 20.sp, vertical: 15.sp),
-                    ),
-                  ),
-                  SizedBox(height: 15.sp),
-                  TextFormField(
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Password cannot be empty";
-                      }
-                      if (value.length < 6) {
-                        return "Password must be at least 6 characters long";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock, color: Colors.teal[600]),
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 20.sp, vertical: 15.sp),
-                    ),
-                    obscureText: true,
-                  ),
-                  SizedBox(
-                    height: 5.sp,
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordScreen(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          color: Colors.teal[600],
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8.sp),
-                  ElevatedButton(
-                    onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal[600],
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 40.sp, vertical: 15.sp),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      'Login',
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Welcome Back!',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
-                          fontSize: 18.sp,
-                          color: Colors.white,
+                          fontSize: 32.sp, // Updated for screenutil
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal[800],
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20.sp),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Don\'t have an account? ',
-                        style: TextStyle(color: Colors.grey, fontSize: 15.sp),
+                    SizedBox(height: 20.h), // Updated for screenutil
+                    Text(
+                      'Login to your account',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 16.sp, // Updated for screenutil
+                          color: Colors.teal[600],
+                        ),
                       ),
-                      GestureDetector(
-                        onTap: () {
+                    ),
+                    SizedBox(height: 40.h), // Updated for screenutil
+                    TextFormField(
+                      controller: _emailController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Email cannot be empty";
+                        }
+                        if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                          return "Please enter a valid email address";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                              12.r), // Updated for screenutil
+                        ),
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.email, color: Colors.teal[600]),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 15.h), // Updated for screenutil
+                      ),
+                    ),
+                    SizedBox(height: 15.h), // Updated for screenutil
+                    TextFormField(
+                      controller: _passwordController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Password cannot be empty";
+                        }
+                        if (value.length < 6) {
+                          return "Password must be at least 6 characters long";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                              12.r), // Updated for screenutil
+                        ),
+                        labelText: 'Password',
+
+                        prefixIcon: Icon(Icons.lock, color: Colors.teal[600]),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 15.h), // Updated for screenutil
+                      ),
+                      obscureText: true,
+                    ),
+                    SizedBox(height: 5.h), // Updated for screenutil
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SignUpScreen2(),
+                              builder: (context) =>
+                                  const ForgotPasswordScreen(),
                             ),
                           );
                         },
                         child: Text(
-                          'Sign Up',
-                          style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                                color: Colors.teal[600],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.sp),
+                          'Forgot Password?',
+                          style: TextStyle(
+                            color: Colors.teal[600],
+                            fontSize: 16.sp, // Updated for screenutil
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    SizedBox(height: 8.h), // Updated for screenutil
+                    ElevatedButton(
+                      onPressed: _login,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal[600],
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 40.w,
+                            vertical: 15.h), // Updated for screenutil
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              12.r), // Updated for screenutil
+                        ),
+                      ),
+                      child: Text(
+                        'Login',
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 18.sp, // Updated for screenutil
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20.h), // Updated for screenutil
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Don\'t have an account? ',
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 15.sp), // Updated for screenutil
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignUpScreen2(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Sign Up',
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                  color: Colors.teal[600],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.sp), // Updated for screenutil
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

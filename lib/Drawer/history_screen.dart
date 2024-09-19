@@ -54,10 +54,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
           final bookedSlots = snapshot.data ?? [];
 
           if (bookedSlots.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'No bookings found.',
-                style: TextStyle(fontSize: 18, color: Colors.grey),
+                style: TextStyle(fontSize: 18.sp, color: Colors.grey),
               ),
             );
           }

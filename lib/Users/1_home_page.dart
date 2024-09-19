@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, file_names, use_build_context_synchronously, avoid_print
 
+import 'dart:convert';
+
 import 'package:box_booking_project/Drawer/drawer_page.dart';
 import 'package:box_booking_project/Users/2_booking_page.dart';
 import 'package:box_booking_project/Users/profile_screen.dart';
@@ -7,8 +9,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class HomePageScreen5 extends StatefulWidget {
   final List<BookedSlot>? bookedSlots;
@@ -116,7 +120,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                         child: Column(
                           children: [
                             Opacity(
-                              opacity: 0.7.sp,
+                              opacity: 0.7,
                               child: Image(
                                 height: 230.sp,
                                 width: 230.sp,
@@ -170,6 +174,12 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                                   color: Colors.grey[600],
                                   fontSize: 16.sp,
                                 ),
+                              ),
+                              // Add a cancel button
+                              trailing: IconButton(
+                                icon: Icon(Icons.cancel,
+                                    color: Colors.red, size: 25.sp),
+                                onPressed: () => _showCancelDialog(slot),
                               ),
                             ),
                           );
@@ -226,6 +236,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
             boxName: data['boxName'],
             timeSlot: data['timeSlot'],
             date: DateTime.parse(data['date']),
+            totalCost: data['totalCost'],
           );
         })
         .where((slot) => slot.date.isAfter(twoDaysAgo))
@@ -235,17 +246,110 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
       _bookedSlots = bookedSlots;
     });
   }
+
+  // Function to show a cancellation confirmation dialog
+  void _showCancelDialog(BookedSlot slot) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Cancel Booking'),
+          content: Text(
+              'Are you sure you want to cancel your booking for ${slot.boxName}?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _cancelBooking(slot);
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// Function to cancel the booking and update Firestore
+  Future<void> _cancelBooking(BookedSlot slot) async {
+    try {
+      // Find the booking document ID based on the slot details
+      final userId = FirebaseAuth.instance.currentUser!.uid;
+      final bookingsQuery = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('userId', isEqualTo: userId)
+          .where('boxName', isEqualTo: slot.boxName)
+          .where('timeSlot', isEqualTo: slot.timeSlot)
+          .where('date', isEqualTo: slot.date.toIso8601String())
+          .get();
+
+      if (bookingsQuery.docs.isNotEmpty) {
+        final bookingDoc = bookingsQuery.docs[0];
+        final paymentId = bookingDoc['paymentId'];
+        final totalCost = bookingDoc['totalCost'];
+
+        // Call your backend for the refund
+        final refundResponse = await _refundPayment(paymentId, totalCost);
+
+        if (refundResponse['status'] == 'processed') {
+          // If refund is successful, delete booking from Firestore
+          await FirebaseFirestore.instance
+              .collection('bookings')
+              .doc(bookingDoc.id)
+              .delete();
+
+          Fluttertoast.showToast(
+              msg: "Booking cancelled and refunded successfully.");
+        } else {
+          Fluttertoast.showToast(
+              msg: "Refund failed: ${refundResponse['error']}");
+        }
+
+        // Refresh the booked slots
+        _fetchBookedSlots();
+      } else {
+        Fluttertoast.showToast(msg: "Booking not found.");
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Failed to cancel booking: $e");
+    }
+  }
+
+// Method to call the backend for a refund
+  Future<Map<String, dynamic>> _refundPayment(
+      String paymentId, double totalCost) async {
+    const url = 'https://api.razorpay.com/v1/payments/:id/refund';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'paymentId': paymentId,
+        'amount': (totalCost * 100).toInt(), // Amount in paisa
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception("Refund request failed: ${response.body}");
+    }
+  }
 }
 
 class BookedSlot {
   final String boxName;
   final String timeSlot;
   final DateTime date;
+  final double totalCost;
 
   BookedSlot({
     required this.boxName,
     required this.timeSlot,
     required this.date,
-    double? totalCost,
+    required this.totalCost,
   });
 }

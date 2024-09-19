@@ -18,77 +18,82 @@ class DrawerPage extends StatelessWidget {
     return Drawer(
       width: 270.sp,
       backgroundColor: Colors.white,
-      child: Column(
-        children: [
-          Image(
-            height: 220.sp,
-            image: const AssetImage('assets/image/Book My Box App Logo.png'),
-          ),
-          Divider(height: 1.sp, color: Colors.grey),
-          SizedBox(height: 10.sp),
-          _buildMenuItem(
-            context,
-            icon: Icons.home_outlined,
-            text: 'Home',
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.info_outline,
-            text: 'Box Book Info',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const BoxBookInfoScreen()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.person_2_outlined,
-            text: 'Profile',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.history,
-            text: 'History',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HistoryScreen()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.wallet_rounded,
-            text: 'Payment',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const PaymentHistoryScreen()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.logout_outlined,
-            text: 'Log out',
-            onTap: () {
-              _showLogoutDialog(context);
-            },
-          ),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Image(
+              height: 220.sp,
+              image: const AssetImage('assets/image/Book My Box App Logo.png'),
+            ),
+            Divider(height: 1.sp, color: Colors.grey),
+            SizedBox(height: 10.sp),
+            _buildMenuItem(
+              context,
+              icon: Icons.home_outlined,
+              text: 'Home',
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            _buildMenuItem(
+              context,
+              icon: Icons.info_outline,
+              text: 'Box Book Info',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BoxBookInfoScreen()),
+                );
+              },
+            ),
+            _buildMenuItem(
+              context,
+              icon: Icons.person_2_outlined,
+              text: 'Profile',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ProfileScreen()),
+                );
+              },
+            ),
+            _buildMenuItem(
+              context,
+              icon: Icons.history,
+              text: 'History',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HistoryScreen()),
+                );
+              },
+            ),
+            _buildMenuItem(
+              context,
+              icon: Icons.wallet_rounded,
+              text: 'Payment',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PaymentHistoryScreen()),
+                );
+              },
+            ),
+            _buildMenuItem(
+              context,
+              icon: Icons.logout_outlined,
+              text: 'Log out',
+              onTap: () {
+                _showLogoutDialog(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -130,8 +135,8 @@ class DrawerPage extends StatelessWidget {
                   color: Colors.black87)),
           content: Text('Are you sure you want to log out?',
               style: TextStyle(fontSize: 16.sp, color: Colors.black54)),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.sp)),
           backgroundColor: Colors.white,
           elevation: 10,
           actionsPadding:
@@ -142,7 +147,7 @@ class DrawerPage extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               child: Text('Cancel',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 16)),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 16.sp)),
             ),
             TextButton(
               onPressed: () async {

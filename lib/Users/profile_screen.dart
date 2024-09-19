@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:box_booking_project/network_and_database/firebase/database.dart'; // Update with the correct import path
+import 'package:box_booking_project/network_and_database/firebase/database.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Update with the correct import path
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class ProfileScreen extends StatelessWidget {
               child: Image.asset(
                 'assets/image/bg cricket.jpg',
                 fit: BoxFit.cover,
-                height: 400, // Adjust the height as needed
+                height: 400.sp, // Adjust the height as needed
                 width: double.infinity,
               ),
             ),
@@ -62,32 +63,32 @@ class ProfileScreen extends StatelessWidget {
                       Center(
                         child: Column(
                           children: [
-                            const CircleAvatar(
-                              radius: 50,
-                              backgroundImage: AssetImage(
+                            CircleAvatar(
+                              radius: 50.sp,
+                              backgroundImage: const AssetImage(
                                   'assets/image/cricket-player- avetar.jpg'), // Replace with actual image path or use NetworkImage if fetching from a URL
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10.sp),
                             Text(
                               '$firstName $lastName',
-                              style: const TextStyle(
-                                fontSize: 24,
+                              style: TextStyle(
+                                fontSize: 24.sp,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.teal,
                               ),
                             ),
-                            const SizedBox(height: 5),
+                            SizedBox(height: 5.sp),
                             Text(
                               email,
-                              style: const TextStyle(
-                                fontSize: 18,
+                              style: TextStyle(
+                                fontSize: 18.sp,
                                 color: Colors.grey,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.sp),
 
                       // Profile Details
                       Container(
@@ -103,12 +104,12 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(16.0.sp),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildDetailRow('Phone Number', phoneNumber),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10.sp),
                             _buildDetailRow('Email', email),
                             // Add more details as needed
                           ],

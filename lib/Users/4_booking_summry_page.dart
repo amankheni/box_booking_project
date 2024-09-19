@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '5_payment_screen.dart';
 
@@ -56,10 +57,10 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
             children: [
               Text(
                 widget.boxName,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 20.sp,
                 ),
               ),
             ],
@@ -71,151 +72,154 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Slot Details
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.teal.shade50,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade300,
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Slot Details',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                padding: EdgeInsets.all(16.0.sp),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Slot Details
+                      Container(
+                        padding: EdgeInsets.all(16.0.sp),
+                        decoration: BoxDecoration(
+                          color: Colors.teal.shade50,
+                          borderRadius: BorderRadius.circular(8.sp),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade300,
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            formattedDate,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.teal.shade200),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.shade300,
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Slot Details',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.sp,
+                              ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.timeSlot,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        widget.boxName,
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Icon(
-                                          Icons.cancel_outlined,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    '₹ ${totalCost.toStringAsFixed(2)} /-',
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 16,
-                                    ),
+                            const SizedBox(height: 10),
+                            Text(
+                              formattedDate,
+                              style: TextStyle(fontSize: 16.sp),
+                            ),
+                            SizedBox(height: 10.sp),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12.sp),
+                                border: Border.all(color: Colors.teal.shade200),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade300,
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
                                   ),
                                 ],
                               ),
+                              child: Padding(
+                                padding: EdgeInsets.all(16.0.sp),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.timeSlot,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.sp,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8.sp),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          widget.boxName,
+                                          style: TextStyle(fontSize: 16.sp),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Icon(
+                                            Icons.cancel_outlined,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8.sp),
+                                    Text(
+                                      '₹ ${totalCost.toStringAsFixed(2)} /-',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 16.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    // Booking Summary
-                    const Text(
-                      'Booking Summary',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                      SizedBox(height: 20.sp),
+                      // Booking Summary
+                      Text(
+                        'Booking Summary',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.sp,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.teal.shade50,
-                        borderRadius: BorderRadius.circular(8),
+                      SizedBox(height: 10.sp),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.sp, horizontal: 16.sp),
+                        decoration: BoxDecoration(
+                          color: Colors.teal.shade50,
+                          borderRadius: BorderRadius.circular(8.sp),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildSummaryRow('Sport', 'Box Cricket'),
+                            SizedBox(height: 10.sp),
+                            _buildSummaryRow('Slot Price',
+                                '₹ ${totalCost.toStringAsFixed(2)}/-'),
+                            SizedBox(height: 10.sp),
+                            _buildSummaryRow('Convenience Fees', '-'),
+                            SizedBox(height: 10.sp),
+                            const Divider(thickness: 1),
+                            _buildSummaryRow(
+                              'Total',
+                              '₹ ${totalCost.toStringAsFixed(2)}/-',
+                              isBold: true,
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildSummaryRow('Sport', 'Box Cricket'),
-                          const SizedBox(height: 10),
-                          _buildSummaryRow('Slot Price',
-                              '₹ ${totalCost.toStringAsFixed(2)}/-'),
-                          const SizedBox(height: 10),
-                          _buildSummaryRow('Convenience Fees', '-'),
-                          const SizedBox(height: 10),
-                          const Divider(thickness: 1),
-                          _buildSummaryRow(
-                            'Total',
-                            '₹ ${totalCost.toStringAsFixed(2)}/-',
-                            isBold: true,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
         bottomNavigationBar: Container(
-          height: 60,
+          height: 60.sp,
           width: double.infinity,
           color: Colors.teal.shade100,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0.sp),
             child: Row(
               children: [
                 Text(
                   '₹ ${totalCost.toStringAsFixed(2)}/-',
-                  style: const TextStyle(
-                    fontSize: 20,
+                  style: TextStyle(
+                    fontSize: 20.sp,
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
                   ),
@@ -236,17 +240,17 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                       ),
                     );
                   },
-                  child: const Row(
+                  child: Row(
                     children: [
                       Text(
                         'Proceed To Pay',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                         ),
                       ),
-                      SizedBox(width: 10),
-                      Icon(Icons.arrow_forward, size: 20),
+                      SizedBox(width: 10.sp),
+                      Icon(Icons.arrow_forward, size: 20.sp),
                     ],
                   ),
                 ),
@@ -266,14 +270,14 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
           title,
           style: TextStyle(
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            fontSize: 16,
+            fontSize: 16.sp,
           ),
         ),
         Text(
           value,
           style: TextStyle(
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            fontSize: 16,
+            fontSize: 16.sp,
           ),
         ),
       ],

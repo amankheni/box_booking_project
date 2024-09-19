@@ -33,7 +33,7 @@ class BoxBookInfoScreen extends StatelessWidget {
   Widget _buildRuleSection(
       {required String title, required List<String> rules}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
+      padding: EdgeInsets.only(bottom: 20.0.sp),
       child: Card(
         color: Colors.white,
         elevation: 5,
@@ -42,31 +42,31 @@ class BoxBookInfoScreen extends StatelessWidget {
         ),
         shadowColor: Colors.black,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 22,
+                style: TextStyle(
+                  fontSize: 22.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.sp),
               ...rules.map((rule) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: EdgeInsets.symmetric(vertical: 8.0.sp),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.circle, size: 8, color: Colors.black),
-                        const SizedBox(width: 10),
+                        Icon(Icons.circle, size: 8.sp, color: Colors.black),
+                        SizedBox(width: 10.sp),
                         Expanded(
                           child: Text(
                             rule,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 16.sp,
                               color: Colors.black87,
                             ),
                           ),

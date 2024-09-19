@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -30,7 +31,7 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen>
     with SingleTickerProviderStateMixin {
-  Razorpay? _razorpay;
+  late Razorpay _razorpay;
   Timer? _timer;
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -40,8 +41,8 @@ class _PaymentScreenState extends State<PaymentScreen>
   void initState() {
     super.initState();
     _razorpay = Razorpay();
-    _razorpay!.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay!.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
 
     // Initialize the animation controller
     _controller = AnimationController(
@@ -61,7 +62,7 @@ class _PaymentScreenState extends State<PaymentScreen>
 
   @override
   void dispose() {
-    _razorpay?.clear(); // Removes all listeners
+    _razorpay.clear(); // Removes all listeners
     _timer?.cancel(); // Cancel the timer
     _controller.dispose(); // Dispose the animation controller
     super.dispose();
@@ -76,129 +77,131 @@ class _PaymentScreenState extends State<PaymentScreen>
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            const Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Cards, UPI & More',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+        padding: EdgeInsets.all(16.0.sp),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Cards, UPI & More',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.sp,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              height: 330,
-              width: 360,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
+              SizedBox(height: 10.sp),
+              Container(
+                height: 330.sp,
+                width: 360.sp,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(7.0.sp),
+                      child: Row(
+                        children: [
+                          Image(
+                            height: 45.sp,
+                            width: 45.sp,
+                            image: const AssetImage('assets/image/credit.png'),
+                          ),
+                          SizedBox(width: 25.sp),
+                          Text(
+                            'Card',
+                            style: TextStyle(fontSize: 20.sp),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(),
+                    Padding(
+                      padding: EdgeInsets.all(7.0.sp),
+                      child: Row(
+                        children: [
+                          Image(
+                            height: 45.sp,
+                            width: 45.sp,
+                            image:
+                                const AssetImage('assets/image/UPI Logo.png'),
+                          ),
+                          SizedBox(width: 25.sp),
+                          Text(
+                            'UPI',
+                            style: TextStyle(fontSize: 20.sp),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: Image(
+                        height: 45.sp,
+                        width: 45.sp,
+                        image: const AssetImage('assets/image/net banking.png'),
+                      ),
+                      title: const Text('Netbanking'),
+                      subtitle: const Text('All Indian Banks'),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: Image(
+                        height: 45.sp,
+                        width: 45.sp,
+                        image: const AssetImage('assets/image/wallet.png'),
+                      ),
+                      title: const Text('Wallet'),
+                      subtitle: const Text('PhonePe & More'),
+                    ),
+                  ],
                 ),
               ),
-              child: const Column(
+              SizedBox(height: 35.sp),
+              const Divider(),
+              Row(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(7.0),
-                    child: Row(
-                      children: [
-                        Image(
-                          height: 45,
-                          width: 45,
-                          image: AssetImage('assets/image/credit.png'),
-                        ),
-                        SizedBox(width: 25),
-                        Text(
-                          'Card',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ],
-                    ),
+                  const Icon(
+                    Icons.watch_later_outlined,
+                    color: Colors.grey,
                   ),
-                  Divider(),
-                  Padding(
-                    padding: EdgeInsets.all(7.0),
-                    child: Row(
-                      children: [
-                        Image(
-                          height: 45,
-                          width: 45,
-                          image: AssetImage('assets/image/UPI Logo.png'),
-                        ),
-                        SizedBox(width: 25),
-                        Text(
-                          'UPI',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Image(
-                      height: 45,
-                      width: 45,
-                      image: AssetImage('assets/image/net banking.png'),
-                    ),
-                    title: Text('Netbanking'),
-                    subtitle: Text('All Indian Banks'),
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Image(
-                      height: 45,
-                      width: 45,
-                      image: AssetImage('assets/image/wallet.png'),
-                    ),
-                    title: Text('Wallet'),
-                    subtitle: Text('PhonePe & More'),
+                  Text('This page will time out in $_start seconds'),
+                ],
+              ),
+              SizedBox(height: 10.sp),
+              LinearProgressIndicator(
+                borderRadius: BorderRadius.circular(50.sp),
+                minHeight: 7,
+                value:
+                    _animation.value, // Use animation value for smooth progress
+                backgroundColor: const Color.fromARGB(255, 217, 249, 218),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(width: 50.sp),
+                  const Text('Secured by'),
+                  Image(
+                    height: 50.sp,
+                    width: 130.sp,
+                    image: const AssetImage('assets/image/RazorPay.png'),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 35),
-            const Divider(),
-            Row(
-              children: [
-                const Icon(
-                  Icons.watch_later_outlined,
-                  color: Colors.grey,
-                ),
-                Text('This page will time out in $_start seconds'),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            LinearProgressIndicator(
-              borderRadius: BorderRadius.circular(50),
-              minHeight: 7,
-              value:
-                  _animation.value, // Use animation value for smooth progress
-              backgroundColor: const Color.fromARGB(255, 217, 249, 218),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-            ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(width: 50),
-                Text('Secured by'),
-                Image(
-                  height: 50,
-                  width: 130,
-                  image: AssetImage('assets/image/RazorPay.png'),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
-        height: 50,
+        height: 50.sp,
         width: double.infinity,
         color: Colors.blue.shade50,
         child: Padding(
@@ -208,43 +211,19 @@ class _PaymentScreenState extends State<PaymentScreen>
             children: [
               Text(
                 '₹ ${widget.totalCost.toStringAsFixed(2)}/-',
-                style: const TextStyle(
-                  fontSize: 20,
+                style: TextStyle(
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               MaterialButton(
                 color: const Color.fromARGB(255, 45, 167, 162),
                 onPressed: () async {
-                  // Fetch user details from Firestore
-                  final userId = FirebaseAuth.instance.currentUser!.uid;
-                  final userDoc = await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(userId)
-                      .get();
-                  final userData = userDoc.data();
-
-                  // Extract details
-                  final contactNumber = userData?['phoneNumber'] ?? 'N/A';
-                  final email = userData?['email'] ?? 'test@razorpay.com';
-                  final userName = userData?['firstName'] ?? 'Acme Corp.';
-
-                  // Payment options
-                  var options = {
-                    'key': 'rzp_test_r6BrEFcR4X4ecz',
-                    'amount': (widget.totalCost * 100)
-                        .toInt(), // Amount is in paise, so multiply by 100
-                    'name': userName,
-                    'description': 'Booking for ${widget.boxName}',
-                    'prefill': {'contact': contactNumber, 'email': email}
-                  };
-
-                  // Open Razorpay with the options
-                  _razorpay?.open(options);
+                  await _initiatePayment();
                 },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
-                  child: Text(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30.sp),
+                  child: const Text(
                     'Pay Now',
                     style: TextStyle(color: Colors.white),
                   ),
@@ -255,6 +234,35 @@ class _PaymentScreenState extends State<PaymentScreen>
         ),
       ),
     );
+  }
+
+  Future<void> _initiatePayment() async {
+    // Fetch user details from Firestore
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final userData = userDoc.data();
+
+    // Extract details
+    final contactNumber = userData?['phoneNumber'] ?? 'N/A';
+    final email = userData?['email'] ?? 'test@razorpay.com';
+    final userName = userData?['firstName'] ?? 'Acme Corp.';
+
+    // Payment options
+    var options = {
+      'key': 'rzp_test_ajzWxbRdWdbBA4',
+      'amount': (widget.totalCost * 100).toInt(), // Amount is in paise
+      'name': userName,
+      'description': 'Booking for ${widget.boxName}',
+      'prefill': {'contact': contactNumber, 'email': email}
+    };
+
+    // Open Razorpay with the options
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Error: $e');
+    }
   }
 
   void startTimer() {
@@ -309,56 +317,33 @@ class _PaymentScreenState extends State<PaymentScreen>
     // Fetch the user details from the 'users' collection
     final userDoc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    final userData = userDoc.data();
+    final username = userDoc.data()?['firstName'] ?? 'Unknown';
+    final phoneNumber = userDoc.data()?['phoneNumber'] ?? 'Unknown';
 
-    final username = userData?['firstName'] ?? 'Unknown User';
-    final phoneNumber = userData?['phoneNumber'] ?? 'N/A';
-
-    // Save booking details including payment ID to Firestore
+    // Save booking details to Firestore
     await FirebaseFirestore.instance.collection('bookings').add({
-      'boxName': widget.boxName,
-      'timeSlot': widget.timeSlot,
-      'date': widget.date.toIso8601String(),
       'userId': userId,
       'username': username,
       'phoneNumber': phoneNumber,
+      'boxName': widget.boxName,
+      'timeSlot': widget.timeSlot,
+      'date': widget.date.toIso8601String(),
       'totalCost': widget.totalCost,
-      'paymentId': response.paymentId, // Store the payment ID
+      'paymentId': response.paymentId,
     });
 
-    // Show the payment success dialog
-    _showPaymentSuccessDialog();
+    // Navigate to home page after successful payment
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomePageScreen5(),
+      ),
+    );
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
-    Fluttertoast.showToast(msg: 'Payment Failed');
-  }
-
-  void _showPaymentSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: const Text('Payment Successful'),
-          content: const Text('Your payment was processed successfully.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                // Navigate to HomePage or another screen
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomePageScreen5(),
-                  ),
-                );
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
+    Fluttertoast.showToast(
+      msg: "Payment failed: ${response.code} | ${response.message}",
     );
   }
 }

@@ -238,7 +238,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
             EdgeInsets.symmetric(horizontal: 16.sp, vertical: 14.sp),
         filled: true,
         fillColor: Colors.white,
-        labelStyle: TextStyle(color: Colors.teal[600]),
+       // labelStyle: TextStyle(color: Colors.teal[600]),
       ),
     );
   }

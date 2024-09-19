@@ -4,6 +4,7 @@ import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AdminProfileScreen extends StatefulWidget {
   const AdminProfileScreen({super.key});
@@ -59,11 +60,11 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0.sp),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
+            SizedBox(height: 20.sp),
             TextField(
               controller: _firstNameController,
               decoration: const InputDecoration(
@@ -72,7 +73,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                 prefixIcon: Icon(Icons.person),
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 15.sp),
             TextField(
               controller: _lastNameController,
               decoration: const InputDecoration(
@@ -81,7 +82,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                 prefixIcon: Icon(Icons.person),
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 15.sp),
             TextField(
               controller: _phoneNumberController,
               decoration: const InputDecoration(
@@ -91,7 +92,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                 enabled: false,
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 15.sp),
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(
@@ -101,23 +102,23 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                 enabled: false,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.sp),
             Center(
               child: ElevatedButton(
                 onPressed: _updateAdminDetails,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal, // Background color
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      EdgeInsets.symmetric(horizontal: 30.sp, vertical: 15.sp),
                   shape: RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.circular(12), // Button border radius
+                        BorderRadius.circular(12.sp), // Button border radius
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Save Changes',
                   style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),

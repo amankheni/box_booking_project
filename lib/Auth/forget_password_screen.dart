@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -24,46 +25,47 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             color: Colors.grey[100], // Light background color
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.w), // Updated for ScreenUtil
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Icon or Image to enhance visuals
                     Icon(
                       Icons.lock_reset,
-                      size: 80,
+                      size: 80.sp, // Updated for ScreenUtil
                       color: Colors.teal[800], // Dark teal color for the icon
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h), // Updated for ScreenUtil
                     Text(
                       'Forgot Password',
                       style: GoogleFonts.montserrat(
-                        fontSize: 30,
+                        fontSize: 30.sp, // Updated for ScreenUtil
                         fontWeight: FontWeight.bold,
                         color:
                             Colors.teal[800], // Dark teal for better contrast
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10.h), // Updated for ScreenUtil
                     Text(
                       'Enter your email to reset password',
                       style: GoogleFonts.montserrat(
-                        fontSize: 18,
+                        fontSize: 18.sp, // Updated for ScreenUtil
                         color: Colors.teal[600],
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 30),
+                    SizedBox(height: 30.h), // Updated for ScreenUtil
                     // Form card
                     Card(
                       elevation: 8,
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(
+                            20.r), // Updated for ScreenUtil
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(16.w), // Updated for ScreenUtil
                         child: Column(
                           children: [
                             TextField(
@@ -73,26 +75,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 prefixIcon:
                                     Icon(Icons.email, color: Colors.teal[600]),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(
+                                      12.r), // Updated for ScreenUtil
                                 ),
                               ),
                               keyboardType: TextInputType.emailAddress,
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20.h), // Updated for ScreenUtil
                             ElevatedButton(
                               onPressed: _resetPassword,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.teal[600],
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 50, vertical: 15),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 50.w,
+                                    vertical: 15.h), // Updated for ScreenUtil
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(
+                                      12.r), // Updated for ScreenUtil
                                 ),
                               ),
                               child: Text(
                                 'Reset Password',
                                 style: GoogleFonts.montserrat(
-                                  fontSize: 18,
+                                  fontSize: 18.sp, // Updated for ScreenUtil
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -109,10 +114,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
           // Positioned back arrow button in top right
           Positioned(
-            top: 40, // Adjust the vertical position
-            left: 5, // Adjust the horizontal position
+            top: 40.h, // Updated for ScreenUtil
+            left: 5.w, // Updated for ScreenUtil
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.teal[800], size: 28),
+              icon: Icon(Icons.arrow_back,
+                  color: Colors.teal[800],
+                  size: 28.sp), // Updated for ScreenUtil
               onPressed: () {
                 Navigator.pop(context); // Navigate back
               },

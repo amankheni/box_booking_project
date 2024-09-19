@@ -11,7 +11,6 @@ class BookingRules {
       'title': 'Booking Duration',
       'rules': [
         'Minimum booking duration is 1 hour.',
-        'Maximum booking duration is 3 hours per session. If you need more time, you must make a separate booking.',
       ],
     },
     {

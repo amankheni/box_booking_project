@@ -4,6 +4,7 @@ import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
@@ -28,7 +29,7 @@ class AdminDashboardScreen extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0.sp),
         child: FutureBuilder<QuerySnapshot>(
           future: FirebaseFirestore.instance.collection('bookings').get(),
           builder: (context, snapshot) {
@@ -69,33 +70,33 @@ class AdminDashboardScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final slot = bookings[index];
                 return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  margin: EdgeInsets.symmetric(vertical: 8.0.sp),
                   elevation: 5,
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   child: ListTile(
-                    contentPadding: const EdgeInsets.all(16.0),
+                    contentPadding: EdgeInsets.all(16.0.sp),
                     title: Text(
                       slot.username,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 18.sp,
                       ),
                     ),
                     subtitle: Text(
                       '${slot.timeSlot} \n${DateFormat('dd MMM yyyy').format(slot.date)}\nPhone: ${slot.phoneNumber}',
                       style: TextStyle(
                         color: Colors.grey[600],
-                        fontSize: 16,
+                        fontSize: 16.sp,
                       ),
                     ),
                     trailing: Text(
                       '₹ ${slot.totalCost?.toStringAsFixed(2) ?? '0.00'}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         color: Colors.green,
                       ),
                     ),
