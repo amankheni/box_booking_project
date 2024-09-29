@@ -176,11 +176,11 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
                                 ),
                               ),
                               // Add a cancel button
-                              trailing: IconButton(
-                                icon: Icon(Icons.cancel,
-                                    color: Colors.red, size: 25.sp),
-                                onPressed: () => _showCancelDialog(slot),
-                              ),
+                              // trailing: IconButton(
+                              //   icon: Icon(Icons.cancel,
+                              //       color: Colors.red, size: 25.sp),
+                              //   onPressed: () => _showCancelDialog(slot),
+                              // ),
                             ),
                           );
                         },
@@ -264,7 +264,7 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _cancelBooking(slot);
+                // _cancelBooking(slot);
               },
               child: const Text('Yes'),
             ),
@@ -275,49 +275,49 @@ class _HomePageScreen5State extends State<HomePageScreen5> {
   }
 
 // Function to cancel the booking and update Firestore
-  Future<void> _cancelBooking(BookedSlot slot) async {
-    try {
-      // Find the booking document ID based on the slot details
-      final userId = FirebaseAuth.instance.currentUser!.uid;
-      final bookingsQuery = await FirebaseFirestore.instance
-          .collection('bookings')
-          .where('userId', isEqualTo: userId)
-          .where('boxName', isEqualTo: slot.boxName)
-          .where('timeSlot', isEqualTo: slot.timeSlot)
-          .where('date', isEqualTo: slot.date.toIso8601String())
-          .get();
+  // Future<void> _cancelBooking(BookedSlot slot) async {
+  //   try {
+  //     // Find the booking document ID based on the slot details
+  //     final userId = FirebaseAuth.instance.currentUser!.uid;
+  //     final bookingsQuery = await FirebaseFirestore.instance
+  //         .collection('bookings')
+  //         .where('userId', isEqualTo: userId)
+  //         .where('boxName', isEqualTo: slot.boxName)
+  //         .where('timeSlot', isEqualTo: slot.timeSlot)
+  //         .where('date', isEqualTo: slot.date.toIso8601String())
+  //         .get();
 
-      if (bookingsQuery.docs.isNotEmpty) {
-        final bookingDoc = bookingsQuery.docs[0];
-        final paymentId = bookingDoc['paymentId'];
-        final totalCost = bookingDoc['totalCost'];
+  //     if (bookingsQuery.docs.isNotEmpty) {
+  //       final bookingDoc = bookingsQuery.docs[0];
+  //       final paymentId = bookingDoc['paymentId'];
+  //       final totalCost = bookingDoc['totalCost'];
 
-        // Call your backend for the refund
-        final refundResponse = await _refundPayment(paymentId, totalCost);
+  //       // Call your backend for the refund
+  //       final refundResponse = await _refundPayment(paymentId, totalCost);
 
-        if (refundResponse['status'] == 'processed') {
-          // If refund is successful, delete booking from Firestore
-          await FirebaseFirestore.instance
-              .collection('bookings')
-              .doc(bookingDoc.id)
-              .delete();
+  //       if (refundResponse['status'] == 'processed') {
+  //         // If refund is successful, delete booking from Firestore
+  //         await FirebaseFirestore.instance
+  //             .collection('bookings')
+  //             .doc(bookingDoc.id)
+  //             .delete();
 
-          Fluttertoast.showToast(
-              msg: "Booking cancelled and refunded successfully.");
-        } else {
-          Fluttertoast.showToast(
-              msg: "Refund failed: ${refundResponse['error']}");
-        }
+  //         Fluttertoast.showToast(
+  //             msg: "Booking cancelled and refunded successfully.");
+  //       } else {
+  //         Fluttertoast.showToast(
+  //             msg: "Refund failed: ${refundResponse['error']}");
+  //       }
 
-        // Refresh the booked slots
-        _fetchBookedSlots();
-      } else {
-        Fluttertoast.showToast(msg: "Booking not found.");
-      }
-    } catch (e) {
-      Fluttertoast.showToast(msg: "Failed to cancel booking: $e");
-    }
-  }
+  //       // Refresh the booked slots
+  //       _fetchBookedSlots();
+  //     } else {
+  //       Fluttertoast.showToast(msg: "Booking not found.");
+  //     }
+  //   } catch (e) {
+  //     Fluttertoast.showToast(msg: "Failed to cancel booking: $e");
+  //   }
+  // }
 
 // Method to call the backend for a refund
   Future<Map<String, dynamic>> _refundPayment(

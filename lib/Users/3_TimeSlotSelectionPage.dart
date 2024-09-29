@@ -114,20 +114,25 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
                       width: 8.sp,
                     ),
                     Text(
-                      '${_pricePerHour!.toStringAsFixed(2)} (Per Hour)',
-                      style: TextStyle(fontSize: 16.sp),
+                      ' ${_pricePerHour!.toStringAsFixed(2)} (Per Hour)',
+                      style: TextStyle(
+                          fontSize: 16.sp, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
-                SizedBox(height: 16.sp),
+                SizedBox(height: 10.sp),
               ],
               if (_adminFirstName != null && _adminLastName != null) ...[
                 Text(
                   'Owner : $_adminFirstName $_adminLastName',
                   style: TextStyle(fontSize: 16.sp),
                 ),
-                SizedBox(height: 16.sp),
               ],
+              SizedBox(height: 3.sp),
+              const Divider(
+                color: Colors.grey,
+              ),
+              SizedBox(height: 3.sp),
               Text(
                 'Available Time Slots',
                 style: Theme.of(context).textTheme.titleLarge,
@@ -136,7 +141,10 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
               if (_todaySlots.isNotEmpty) ...[
                 Text(
                   'Today (${DateFormat('yyyy-MM-dd').format(DateTime.now())})',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17.sp,
+                  ),
                 ),
                 SizedBox(height: 8.sp),
                 // Update in build method where time slots are displayed
@@ -183,7 +191,7 @@ class _TimeSlotSelectionPageState extends State<TimeSlotSelectionPage> {
                 SizedBox(height: 16.sp),
               ] else ...[
                 Text(
-                  'No available slots for today.',
+                  'No slots available for today.',
                   style: TextStyle(fontSize: 16.sp, color: Colors.red),
                 ),
               ],

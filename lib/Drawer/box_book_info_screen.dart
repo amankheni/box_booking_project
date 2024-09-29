@@ -42,7 +42,7 @@ class BoxBookInfoScreen extends StatelessWidget {
         ),
         shadowColor: Colors.black,
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0.sp),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

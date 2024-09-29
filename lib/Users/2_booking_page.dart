@@ -165,6 +165,8 @@ class _BookingPageState extends State<BookingPage> {
                             leading: box['imageUrl'] != null
                                 ? CircleAvatar(
                                     radius: 35.sp,
+                                    backgroundColor: const Color.fromARGB(
+                                        255, 218, 217, 217),
                                     backgroundImage:
                                         NetworkImage(box['imageUrl']),
                                   )

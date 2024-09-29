@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print, file_names
+// ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,16 +15,25 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  bool _isLogoAtTop = false; // To track logo's position
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
 
+    // Initialize the animation controller for the logo animation
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
+      duration: const Duration(seconds: 1),
+    );
 
+    // Animation for fading in the logo
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+
+    _startAnimation();
     _checkUser();
   }
 
@@ -34,8 +43,22 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
+  Future<void> _startAnimation() async {
+    await Future.delayed(
+        const Duration(seconds: 1)); // Delay before starting animation
+
+    // Start moving the logo to the top
+    setState(() {
+      _isLogoAtTop = true;
+    });
+
+    // Start the fade animation
+    _controller.forward();
+  }
+
   Future<void> _checkUser() async {
-    await Future.delayed(const Duration(seconds: 3)); // Simulate a delay
+    await Future.delayed(
+        const Duration(seconds: 4)); // Simulate a delay for loading
 
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -78,6 +101,25 @@ class _SplashScreenState extends State<SplashScreen>
               image: DecorationImage(
                 image: AssetImage('assets/image/sp stamp.jpg'),
                 fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(seconds: 1),
+            curve: Curves.easeInOut,
+            top: _isLogoAtTop
+                ? 15.sp
+                : MediaQuery.of(context).size.height / 2 - 50.sp,
+            left: 0,
+            right: 0,
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Center(
+                child: Image.asset(
+                  'assets/image/Book My Box App Logo.png', // Replace with your logo path
+                  width: 220.sp,
+                  height: 220.sp,
+                ),
               ),
             ),
           ),

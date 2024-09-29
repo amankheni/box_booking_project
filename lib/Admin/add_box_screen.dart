@@ -1,9 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart'; // For date formatting
 import 'package:image_picker/image_picker.dart';
@@ -104,10 +105,34 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
             SizedBox(
               height: 10.sp,
             ),
-            ElevatedButton(
-              style: const ButtonStyle(),
-              onPressed: _pickImage,
-              child: const Text('Pick Image'),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: GestureDetector(
+                onTap: () => _pickImage(),
+                child: Container(
+                  height: 35.sp,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.black,
+                          blurStyle: BlurStyle.outer,
+                          blurRadius: 3),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Pick image',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 13.sp,
@@ -158,20 +183,58 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
                 TextButton(
                   onPressed: () =>
                       _selectTime(context, isStartTime: true, isToday: true),
-                  child: Text('Start: ${_timeFormat.format(_startTimeToday)}'),
+                  child: Text(
+                    'Start: ${_timeFormat.format(_startTimeToday)}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.sp,
+                    ),
+                  ),
                 ),
                 TextButton(
                   onPressed: () =>
                       _selectTime(context, isStartTime: false, isToday: true),
-                  child: Text('End: ${_timeFormat.format(_endTimeToday)}'),
+                  child: Text(
+                    'End: ${_timeFormat.format(_endTimeToday)}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.sp,
+                    ),
+                  ),
                 ),
               ],
             ),
-            ElevatedButton(
-                onPressed: _updateBoxDetails,
-                child: const Text(
-                  'Update Box',
-                ))
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: GestureDetector(
+                onTap: () => _updateBoxDetails(),
+                child: Container(
+                  height: 35.sp,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.black,
+                          blurStyle: BlurStyle.outer,
+                          blurRadius: 3),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Update Box',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -215,8 +278,11 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
           });
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading box details: $e')),
+        IconSnackBar.show(
+          context,
+          snackBarType: SnackBarType.fail,
+          label: 'Error loading box details: $e',
+          labelTextStyle: TextStyle(fontSize: 15.sp),
         );
       }
     }
@@ -262,14 +328,21 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
         if (_boxId != null) {
           // Update existing box
           await _firestore.collection('boxes').doc(_boxId).update(boxData);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Box updated successfully')),
+          IconSnackBar.show(
+            context,
+            snackBarType: SnackBarType.success,
+            label: 'Box updated successfully',
+            labelTextStyle: TextStyle(fontSize: 15.sp),
           );
         } else {
           // Add new box
+
           await _firestore.collection('boxes').add(boxData);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Box added successfully')),
+          IconSnackBar.show(
+            context,
+            snackBarType: SnackBarType.success,
+            label: 'Box added successfully',
+            labelTextStyle: TextStyle(fontSize: 15.sp),
           );
         }
 
@@ -287,8 +360,11 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
           _imageUrl = null;
         });
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating box details: $e')),
+        IconSnackBar.show(
+          context,
+          snackBarType: SnackBarType.fail,
+          label: 'Error updating box details: $e',
+          labelTextStyle: TextStyle(fontSize: 15.sp),
         );
       }
     }
@@ -310,8 +386,11 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
 
       return downloadUrl;
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error uploading image: $e')),
+      IconSnackBar.show(
+        context,
+        snackBarType: SnackBarType.fail,
+        label: 'Error uploading image: $e',
+        labelTextStyle: TextStyle(fontSize: 15.sp),
       );
       return null;
     }
@@ -329,17 +408,34 @@ class _AdminAddBoxScreenState extends State<AdminAddBoxScreen> {
 
     final TimeOfDay? picked = await showTimePicker(
       context: context,
+      barrierColor: Colors.black54,
       initialTime: initialTime,
       builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-          child: child!,
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.teal, // Header background color
+              onPrimary: Colors.white, // Header text color
+              onSurface: Colors.teal, // Body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor:
+                    Colors.teal, // Button text color (e.g., Cancel, OK)
+              ),
+            ),
+          ),
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+            child: child!,
+          ),
         );
       },
     );
 
     if (picked != null) {
       setState(() {
+        // Ensure the minutes are always set to zero (00)
         DateTime newTime = DateTime(
           isToday ? _startTimeToday.year : DateTime.now().year,
           isToday ? _startTimeToday.month : DateTime.now().month,

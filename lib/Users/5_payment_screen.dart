@@ -96,7 +96,7 @@ class _PaymentScreenState extends State<PaymentScreen>
               ),
               SizedBox(height: 10.sp),
               Container(
-                height: 330.sp,
+                height: 300.sp,
                 width: 360.sp,
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -164,7 +164,7 @@ class _PaymentScreenState extends State<PaymentScreen>
                   ],
                 ),
               ),
-              SizedBox(height: 35.sp),
+              SizedBox(height: 8.sp),
               const Divider(),
               Row(
                 children: [

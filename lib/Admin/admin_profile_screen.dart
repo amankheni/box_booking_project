@@ -4,6 +4,7 @@ import 'package:box_booking_project/Auth/1_sing_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AdminProfileScreen extends StatefulWidget {
@@ -156,13 +157,18 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
           'phoneNumber': _phoneNumberController.text.trim(),
           'email': _emailController.text.trim(),
         });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully')),
+        IconSnackBar.show(
+          context,
+          snackBarType: SnackBarType.success,
+          label: 'Profile updated successfully.',
+          labelTextStyle: TextStyle(fontSize: 15.sp),
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating profile: $e')),
+        IconSnackBar.show(
+          context,
+          snackBarType: SnackBarType.fail,
+          label: 'Error updating profile: $e',
+          labelTextStyle: TextStyle(fontSize: 15.sp),
         );
       }
     }

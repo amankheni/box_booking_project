@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, use_build_context_synchronously, avoid_print, prefer_const_constructors_in_immutables
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:box_booking_project/Auth/forget_password_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +24,28 @@ class _SingInScreen1State extends State<SingInScreen1> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  bool _isLoading = false;
+
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true; // Start loading
+      });
+      showDialog(
+        context: context,
+        barrierDismissible: false, // Prevent closing the dialog
+        builder: (BuildContext context) {
+          return const Dialog(
+            backgroundColor: Colors.transparent,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Colors.teal,
+              ),
+            ),
+          );
+        },
+      );
+
       try {
         UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
@@ -51,6 +71,8 @@ class _SingInScreen1State extends State<SingInScreen1> {
 
           String role = userDoc['role'] ?? 'user';
 
+          Navigator.pop(context); // Close the loading dialog
+
           if (role == 'admin') {
             Navigator.pushReplacement(
               context,
@@ -64,6 +86,7 @@ class _SingInScreen1State extends State<SingInScreen1> {
           }
         }
       } on FirebaseAuthException catch (e) {
+        Navigator.pop(context); // Close the loading dialog
         String errorMessage;
         switch (e.code) {
           case 'invalid-email':
@@ -85,13 +108,17 @@ class _SingInScreen1State extends State<SingInScreen1> {
           labelTextStyle: TextStyle(fontSize: 15.sp),
         );
       } catch (e) {
-        print('Error logging in: $e');
+        Navigator.pop(context); // Close the loading dialog
         IconSnackBar.show(
           context,
           snackBarType: SnackBarType.fail,
           labelTextStyle: TextStyle(fontSize: 15.sp),
           label: 'Email or password are incorrect',
         );
+      } finally {
+        setState(() {
+          _isLoading = false; // Stop loading
+        });
       }
     } else {
       IconSnackBar.show(
@@ -117,8 +144,7 @@ class _SingInScreen1State extends State<SingInScreen1> {
         backgroundColor: Colors.grey[100],
         body: Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 24.w), // Updated for screenutil
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Form(
               key: _formKey,
               child: SingleChildScrollView(
@@ -130,23 +156,23 @@ class _SingInScreen1State extends State<SingInScreen1> {
                       'Welcome Back!',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
-                          fontSize: 32.sp, // Updated for screenutil
+                          fontSize: 32.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.teal[800],
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.h), // Updated for screenutil
+                    SizedBox(height: 20.h),
                     Text(
                       'Login to your account',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
-                          fontSize: 16.sp, // Updated for screenutil
+                          fontSize: 16.sp,
                           color: Colors.teal[600],
                         ),
                       ),
                     ),
-                    SizedBox(height: 40.h), // Updated for screenutil
+                    SizedBox(height: 40.h),
                     TextFormField(
                       controller: _emailController,
                       validator: (value) {
@@ -160,17 +186,15 @@ class _SingInScreen1State extends State<SingInScreen1> {
                       },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                              12.r), // Updated for screenutil
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                         labelText: 'Email',
                         prefixIcon: Icon(Icons.email, color: Colors.teal[600]),
                         contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20.w,
-                            vertical: 15.h), // Updated for screenutil
+                            horizontal: 20.w, vertical: 15.h),
                       ),
                     ),
-                    SizedBox(height: 15.h), // Updated for screenutil
+                    SizedBox(height: 15.h),
                     TextFormField(
                       controller: _passwordController,
                       validator: (value) {
@@ -184,19 +208,16 @@ class _SingInScreen1State extends State<SingInScreen1> {
                       },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                              12.r), // Updated for screenutil
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                         labelText: 'Password',
-
                         prefixIcon: Icon(Icons.lock, color: Colors.teal[600]),
                         contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20.w,
-                            vertical: 15.h), // Updated for screenutil
+                            horizontal: 20.w, vertical: 15.h),
                       ),
                       obscureText: true,
                     ),
-                    SizedBox(height: 5.h), // Updated for screenutil
+                    SizedBox(height: 5.h),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
@@ -213,43 +234,41 @@ class _SingInScreen1State extends State<SingInScreen1> {
                           'Forgot Password?',
                           style: TextStyle(
                             color: Colors.teal[600],
-                            fontSize: 16.sp, // Updated for screenutil
+                            fontSize: 16.sp,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 8.h), // Updated for screenutil
+                    SizedBox(height: 8.h),
                     ElevatedButton(
-                      onPressed: _login,
+                      onPressed: _isLoading
+                          ? null
+                          : _login, // Disable button if loading
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal[600],
                         padding: EdgeInsets.symmetric(
-                            horizontal: 40.w,
-                            vertical: 15.h), // Updated for screenutil
+                            horizontal: 40.w, vertical: 15.h),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              12.r), // Updated for screenutil
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                       child: Text(
                         'Login',
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
-                            fontSize: 18.sp, // Updated for screenutil
+                            fontSize: 18.sp,
                             color: Colors.white,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.h), // Updated for screenutil
+                    SizedBox(height: 20.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'Don\'t have an account? ',
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.sp), // Updated for screenutil
+                          style: TextStyle(color: Colors.grey, fontSize: 15.sp),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -266,7 +285,7 @@ class _SingInScreen1State extends State<SingInScreen1> {
                               textStyle: TextStyle(
                                   color: Colors.teal[600],
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16.sp), // Updated for screenutil
+                                  fontSize: 16.sp),
                             ),
                           ),
                         ),
