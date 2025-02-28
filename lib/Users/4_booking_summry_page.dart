@@ -227,18 +227,18 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => PaymentScreen(
-                    //       boxName: widget.boxName,
-                    //       timeSlot: widget.timeSlot,
-                    //       date: widget
-                    //           .date, // Ensure this is not null and properly initialized
-                    //       totalCost: totalCost,
-                    //     ),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PaymentScreen(
+                          boxName: widget.boxName,
+                          timeSlot: widget.timeSlot,
+                          date: widget
+                              .date, // Ensure this is not null and properly initialized
+                          totalCost: totalCost,
+                        ),
+                      ),  
+                    );
                   },
                   child: Row(
                     children: [

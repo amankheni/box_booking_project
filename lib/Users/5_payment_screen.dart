@@ -250,7 +250,7 @@ class _PaymentScreenState extends State<PaymentScreen>
 
     // Payment options
     var options = {
-      'key': 'rzp_test_ajzWxbRdWdbBA4',
+      'key': 'rzp_test_hQfkkexYy6Gxkp',
       'amount': (widget.totalCost * 100).toInt(), // Amount is in paise
       'name': userName,
       'description': 'Booking for ${widget.boxName}',
