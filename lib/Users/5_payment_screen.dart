@@ -1,15 +1,18 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, depend_on_referenced_packages, use_build_context_synchronously, avoid_print
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import 'package:box_booking_project/Users/1_home_page.dart';
+import 'package:intl/intl.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String boxName;
@@ -96,7 +99,7 @@ class _PaymentScreenState extends State<PaymentScreen>
               ),
               SizedBox(height: 10.sp),
               Container(
-                height: 300.sp,
+                height: 320.sp,
                 width: 360.sp,
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -164,7 +167,7 @@ class _PaymentScreenState extends State<PaymentScreen>
                   ],
                 ),
               ),
-              SizedBox(height: 8.sp),
+              SizedBox(height: 10.sp),
               const Divider(),
               Row(
                 children: [
@@ -307,6 +310,61 @@ class _PaymentScreenState extends State<PaymentScreen>
     );
   }
 
+  Future<void> _sendWhatsAppNotification(
+      String phoneNumber, String boxName, String timeSlot, String date) async {
+    try {
+      // Format the phone number (remove '+' if present and ensure it has country code)
+      String formattedPhone = phoneNumber;
+      if (formattedPhone.startsWith('+')) {
+        formattedPhone = formattedPhone.substring(1);
+      }
+      if (!formattedPhone.startsWith('91') && formattedPhone.length == 10) {
+        formattedPhone =
+            '91$formattedPhone'; // Add India country code if not present
+      }
+
+      // Create message text
+      final messageText = 'Your booking has been confirmed!\n\n'
+          'Box: $boxName\n'
+          'Date: $date\n'
+          'Time: $timeSlot\n\n'
+          'Thank you for using Book My Box!';
+
+      // You'll need to replace these with your actual WhatsApp Business API credentials
+      const accountSid = 'YOUR_ACCOUNT_SID';
+      const authToken = 'YOUR_AUTH_TOKEN';
+      const whatsappNumber = 'YOUR_WHATSAPP_BUSINESS_PHONE_NUMBER';
+
+      // For WhatsApp Business API using Twilio (as an example)
+      final url = Uri.parse(
+          'https://api.twilio.com/2010-04-01/Accounts/$accountSid/Messages.json');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization':
+              'Basic ${base64Encode(utf8.encode('$accountSid:$authToken'))}',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'To': 'whatsapp:+$formattedPhone',
+          'From': 'whatsapp:$whatsappNumber',
+          'Body': messageText,
+        },
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        print('WhatsApp notification sent successfully');
+      } else {
+        print('Failed to send WhatsApp notification: ${response.body}');
+        // Consider using a fallback method like SMS if WhatsApp fails
+      }
+    } catch (e) {
+      print('Exception when sending WhatsApp notification: $e');
+      // Error handling - log the error but don't block the booking process
+    }
+  }
+
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     // Show a toast for feedback
     Fluttertoast.showToast(msg: 'Payment Successful');
@@ -320,6 +378,9 @@ class _PaymentScreenState extends State<PaymentScreen>
     final username = userDoc.data()?['firstName'] ?? 'Unknown';
     final phoneNumber = userDoc.data()?['phoneNumber'] ?? 'Unknown';
 
+    // Format the date for better readability
+    final formattedDate = DateFormat('dd MMM yyyy').format(widget.date);
+
     // Save booking details to Firestore
     await FirebaseFirestore.instance.collection('bookings').add({
       'userId': userId,
@@ -330,7 +391,12 @@ class _PaymentScreenState extends State<PaymentScreen>
       'date': widget.date.toIso8601String(),
       'totalCost': widget.totalCost,
       'paymentId': response.paymentId,
+      'bookingTime': FieldValue.serverTimestamp(),
     });
+
+    // Send WhatsApp notification
+    await _sendWhatsAppNotification(
+        phoneNumber, widget.boxName, widget.timeSlot, formattedDate);
 
     // Navigate to home page after successful payment
     Navigator.pushReplacement(

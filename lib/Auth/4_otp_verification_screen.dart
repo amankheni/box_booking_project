@@ -26,6 +26,7 @@ class OtpVerificationScreen4 extends StatefulWidget {
 class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _otpController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +87,18 @@ class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                SizedBox(height: 8.sp),
+                Text(
+                  '+91 ${widget.phoneNumber}',
+                  style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal[700],
+                    ),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 SizedBox(height: 30.sp),
                 // OTP Input Field
                 Pinput(
@@ -96,95 +109,149 @@ class _OtpVerificationScreen4State extends State<OtpVerificationScreen4> {
                   pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                   showCursor: true,
                   length: 6,
-                  // cursorColor: Colors.teal,
-                  // separator: SizedBox(width: 10),
+                  onCompleted: (pin) {
+                    // You can auto-submit when all digits are entered
+                    // or leave this empty if you prefer manual submit
+                  },
                 ),
                 SizedBox(height: 40.sp),
                 // Submit Button
-                ElevatedButton(
-                  onPressed: () async {
-                    String otp = _otpController.text.trim();
+                _isLoading
+                    ? CircularProgressIndicator(color: Colors.teal)
+                    : ElevatedButton(
+                        onPressed: () async {
+                          String otp = _otpController.text.trim();
 
-                    if (otp.isEmpty) {
-                      IconSnackBar.show(
-                        context,
-                        snackBarType: SnackBarType.fail,
-                        label: 'Please enter the OTP',
-                        labelTextStyle: const TextStyle(fontSize: 15),
-                      );
+                          if (otp.isEmpty) {
+                            IconSnackBar.show(
+                              context,
+                              snackBarType: SnackBarType.fail,
+                              label: 'Please enter the OTP',
+                              labelTextStyle: const TextStyle(fontSize: 15),
+                            );
+                            return;
+                          }
 
-                      return;
-                    }
+                          if (otp.length != 6) {
+                            IconSnackBar.show(
+                              context,
+                              snackBarType: SnackBarType.fail,
+                              label: 'Please enter a valid 6-digit OTP',
+                              labelTextStyle: const TextStyle(fontSize: 15),
+                            );
+                            return;
+                          }
 
-                    try {
-                      PhoneAuthCredential credential =
-                          PhoneAuthProvider.credential(
-                        verificationId: widget.verificationId,
-                        smsCode: otp,
-                      );
+                          setState(() {
+                            _isLoading = true;
+                          });
 
-                      await _auth.signInWithCredential(credential).then(
-                        (value) async {
-                          await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(value.user?.uid)
-                              .set({
-                            'phoneNumber': widget.phoneNumber,
-                            // Add other user details here if needed
-                          }, SetOptions(merge: true));
+                          try {
+                            PhoneAuthCredential credential =
+                                PhoneAuthProvider.credential(
+                              verificationId: widget.verificationId,
+                              smsCode: otp,
+                            );
 
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SingInScreen1(),
-                            ),
-                          );
+                            await _auth.signInWithCredential(credential).then(
+                              (value) async {
+                                if (value.user != null) {
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(value.user?.uid)
+                                      .set({
+                                    'phoneNumber': widget.phoneNumber,
+                                    'verified': true,
+                                    'lastLoginAt': FieldValue.serverTimestamp(),
+                                    // Add other user details here if needed
+                                  }, SetOptions(merge: true));
 
-                          IconSnackBar.show(
-                            context,
-                            snackBarType: SnackBarType.success,
-                            label: 'Verified successfully',
-                            labelTextStyle: TextStyle(fontSize: 15.sp),
-                          );
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SingInScreen1(),
+                                    ),
+                                  );
+
+                                  IconSnackBar.show(
+                                    context,
+                                    snackBarType: SnackBarType.success,
+                                    label: 'Verified successfully',
+                                    labelTextStyle: TextStyle(fontSize: 15.sp),
+                                  );
+                                } else {
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                  IconSnackBar.show(
+                                    context,
+                                    snackBarType: SnackBarType.fail,
+                                    label: 'Verification failed: User is null',
+                                    labelTextStyle: TextStyle(fontSize: 15.sp),
+                                  );
+                                }
+                              },
+                            ).catchError((error) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              IconSnackBar.show(
+                                context,
+                                snackBarType: SnackBarType.fail,
+                                label: 'Verification failed: ${error.message}',
+                                labelTextStyle: TextStyle(fontSize: 15.sp),
+                              );
+                            });
+                          } catch (e) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            IconSnackBar.show(
+                              context,
+                              snackBarType: SnackBarType.fail,
+                              label: 'An error occurred: $e',
+                              labelTextStyle: TextStyle(fontSize: 15.sp),
+                            );
+                          }
                         },
-                      ).catchError((error) {
-                        IconSnackBar.show(
-                          context,
-                          snackBarType: SnackBarType.fail,
-                          label: 'Verification failed: $error',
-                          labelTextStyle: TextStyle(fontSize: 15.sp),
-                        );
-                      });
-                    } catch (e) {
-                      IconSnackBar.show(
-                        context,
-                        snackBarType: SnackBarType.fail,
-                        label: 'An error occurred: $e',
-                        labelTextStyle: TextStyle(fontSize: 15.sp),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal.shade600,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 16.sp,
-                      horizontal: 50.sp,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 5,
-                  ),
-                  child: Text(
-                    'Submit',
-                    style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                        fontSize: 18.sp,
-                        color: Colors.white,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal.shade600,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 16.sp,
+                            horizontal: 50.sp,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 5,
+                        ),
+                        child: Text(
+                          'Submit',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              fontSize: 18.sp,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                SizedBox(height: 20.sp),
+                if (!_isLoading)
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      'Change Phone Number',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          color: Colors.teal[700],
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16.sp,
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

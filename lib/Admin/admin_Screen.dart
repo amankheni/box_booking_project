@@ -1,7 +1,8 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, deprecated_member_use
 
 import 'package:box_booking_project/Admin/add_box_screen.dart';
 import 'package:box_booking_project/Admin/admin_profile_screen.dart';
+import 'package:box_booking_project/Admin/admin_report_screen.dart';
 import 'package:box_booking_project/Admin/dashbord_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
@@ -19,7 +20,9 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
   final List<Widget> _pages = [
     const AdminDashboardScreen(),
     const AdminAddBoxScreen(),
+    AdminReportScreen(),
     const AdminProfileScreen(),
+     
   ];
 
   void _onItemTapped(int index) {
@@ -36,6 +39,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
         icons: const [
           Icons.home,
           Icons.dashboard,
+          Icons.add_chart,
           Icons.person,
         ],
         activeIndex: _selectedIndex,

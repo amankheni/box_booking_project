@@ -18,6 +18,7 @@ class OtpsendingScreen3 extends StatefulWidget {
 
 class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
   final TextEditingController _phoneNumberController = TextEditingController();
+  String _countryCode = '+91'; // Default country code for India
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,10 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                     ),
                     keyboardType: TextInputType.phone,
                     initialCountryCode: 'IN',
-                    onChanged: (phone) {},
+                    onChanged: (phone) {
+                      // Update the country code when it changes
+                      _countryCode = '+${phone.countryCode}';
+                    },
                   ),
                 ),
                 SizedBox(height: 20.sp),
@@ -115,20 +119,21 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                         backgroundColor: Colors.red,
                         labelTextStyle: TextStyle(fontSize: 15.sp),
                       );
-
                       return;
                     }
 
-                    if (!RegExp(r'^\d{10}$').hasMatch(phoneNumber)) {
-                      IconSnackBar.show(
-                        context,
-                        snackBarType: SnackBarType.alert,
-                        label: 'Please enter a valid 10-digit phone number',
-                        labelTextStyle: TextStyle(fontSize: 15.sp),
-                      );
-
-                      return;
-                    }
+                    // Show loading indicator
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.teal,
+                          ),
+                        );
+                      },
+                    );
 
                     try {
                       final user = FirebaseAuth.instance.currentUser;
@@ -140,22 +145,20 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                           'phoneNumber': phoneNumber,
                         });
                       }
-                      //  final user = FirebaseAuth.instance.currentUser;
-                      // if (user != null) {
-                      //   await FirebaseFirestore.instance
-                      //       .collection('users')
-                      //       .doc(user
-                      //           .uid) // Fetches the document with the current user's UID
-                      //       .update({
-                      //     'phoneNumber':
-                      //         phoneNumber, // Updates the 'phoneNumber' field in the document
-                      //   });
-                      // }
+
+                      // Format the phone number correctly with the country code
+                      // Remove any spaces and ensure proper formatting
+                      String formattedPhoneNumber = '$_countryCode$phoneNumber';
+                      formattedPhoneNumber =
+                          formattedPhoneNumber.replaceAll(' ', '');
 
                       await FirebaseAuth.instance.verifyPhoneNumber(
-                        phoneNumber: '+91 $phoneNumber',
+                        phoneNumber: formattedPhoneNumber,
                         verificationCompleted:
                             (PhoneAuthCredential credential) async {
+                          // Close loading dialog
+                          Navigator.of(context).pop();
+
                           await FirebaseAuth.instance
                               .signInWithCredential(credential);
                           IconSnackBar.show(
@@ -166,6 +169,9 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                           );
                         },
                         verificationFailed: (FirebaseAuthException e) {
+                          // Close loading dialog
+                          Navigator.of(context).pop();
+
                           IconSnackBar.show(
                             context,
                             snackBarType: SnackBarType.fail,
@@ -174,6 +180,9 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                           );
                         },
                         codeSent: (verificationId, forceResendingToken) {
+                          // Close loading dialog
+                          Navigator.of(context).pop();
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -184,9 +193,16 @@ class _OtpsendingScreen3State extends State<OtpsendingScreen3> {
                             ),
                           );
                         },
-                        codeAutoRetrievalTimeout: (String verificationId) {},
+                        codeAutoRetrievalTimeout: (String verificationId) {
+                          // Close loading dialog if still showing
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
+                        timeout: const Duration(seconds: 60),
                       );
                     } catch (e) {
+                      // Close loading dialog
+                      Navigator.of(context, rootNavigator: true).pop();
+
                       IconSnackBar.show(
                         context,
                         snackBarType: SnackBarType.alert,
